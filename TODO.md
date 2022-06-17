@@ -9,13 +9,13 @@
 ###### [Youtube playlist for ideas](https://youtube.com/playlist?list=PLvypLlLlZuNhcdtPKfQ25cpmhBuWWDZzR)
 - [ ] organize project
     - what is the project structure of egui?
-    - [ ] new git repo
-    - [ ] add as git submodule to programming repo
-    - [ ] create a good README
+    - [X] new git repo
+    - [X] add as git submodule to programming repo
     - [ ] new cargo workspace
     - [ ] engine as sub cargo lib
     - [ ] example_configs folder
     - [ ] examples folder
+    - [ ] create a good README
     - [ ] each renderer as sub cargo lib
         - Renderers
             - web_canvas_particle
