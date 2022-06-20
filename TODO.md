@@ -12,8 +12,9 @@
     - [X] new git repo
     - [X] add as git submodule to programming repo
     - [ ] new cargo workspace
-    - [ ] engine as sub cargo lib
-    - [ ] example_configs folder
+    - [ ] engine2d as sub cargo lib
+    - [ ] engine3d as sub cargo lib
+    - [ ] example_configs2d/3d folders
     - [ ] examples folder
     - [ ] create a good README
     - [ ] each renderer as sub cargo lib
@@ -22,8 +23,9 @@
             - eframe_particle
             - wgpu_solid -> treat groups of particles as object vertex
             - etc
-- [ ] add group_num to Particle (free number to use for things like render method, "phase type", etc)
+- [X] add group_num to Particle (free number to use for things like render method, "phase type", etc)
 - [ ] figure out good Sim encapsulation
+- [ ] overload operators on Vec2
 - [ ] run, step_sim, play_pause_toggle
 - [ ] create a general type of constraint 
     - forces have a general variant (Raw) as well as specifics, why not same for constraints?
@@ -57,7 +59,11 @@
                 None => save in memory
                 Some(file) => save to file
             }
+            if let file = Some(?) {
+                save to ?
+            }
         }
         ```
 - [ ] viscosity how? want this engine to be general enough for fluid sim
+- [ ] 3d version of the engine
 - [ ] load 3d files as set of connected particles
