@@ -29,7 +29,7 @@ impl Particle {
         for force in self.forces {
             accel += force / self.mass;
         }
-
+        self.forces.clear(); // should I do this?
         self.vel += accel * dt;
         self.pos += self.vel * dt;
     }

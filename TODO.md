@@ -1,13 +1,13 @@
 
 # TODO / IDEAS
 
-###### Things to figure out
+##### Things to figure out
 - update velocity after constraint projection based on displacement & dt? (otherwise objects will continue to collide, etc)
 - how does mass factor in? move each a certain fraction of the total distance weighted by mass?
 - constraint projection must preserve conserved quantities. do forces and impulses preserve them?
 - delete the forces after adding them to accel in Particle.update?
 
-###### [Youtube playlist for ideas](https://youtube.com/playlist?list=PLvypLlLlZuNhcdtPKfQ25cpmhBuWWDZzR)
+##### Tasks
 - [ ] organize project
     - what is the project structure of egui?
     - [X] new git repo
@@ -66,5 +66,6 @@
         }
         ```
 - [ ] viscosity how? want this engine to be general enough for fluid sim
+- [ ] methods for soft bodies? pneumatic, etc
 - [ ] 3d version of the engine
 - [ ] load 3d files as set of connected particles
