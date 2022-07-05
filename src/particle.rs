@@ -1,6 +1,8 @@
+use crate::math::Vec2;
+
 /// A physical particle.  Is only aware of its own properties, state, and the forces acting on it (obeys locality)
 #[derive(Default)]
-struct Particle {
+pub struct Particle {
     mass: f64,
     //charge: f64,
     radius: f64,

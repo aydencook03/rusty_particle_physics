@@ -1,14 +1,14 @@
 /// A 2d euclidean vector
 #[derive(Copy, Clone, Default)]
-struct Vec2d {
+pub struct Vec2 {
     x: f64,
     y: f64,
 }
 
-impl Vec2d {
+impl Vec2 {
     /// Constructor function: returns a zero Vec2d (using Default for f64)
-    fn new() -> Vec2d {
-        Vec2d { ..Default::default() }
+    fn new() -> Vec2 {
+        Vec2 { ..Default::default() }
     }
 
     /// Returns the magnitude of the Vec2d
