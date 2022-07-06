@@ -15,7 +15,7 @@ pub enum Constraint {
         start: Vec2,
         end: Vec2,
     },
-    
+
     FixedDistance {
         particle: &mut Particle,
         point: Vec2,
@@ -58,10 +58,10 @@ impl Constraint {
     fn handle_as_static_constraint(self: &Self) {
         match self {
             PinToPoint => {
-                /* const is_satisfied: bool = EXPR...;
+                const is_satisfied: bool = todo!(); //EXPR...
                 if !is_satisfied {
-                    handle...
-                } */
+                    todo!(); //handle...
+                }
             }
         }
     }

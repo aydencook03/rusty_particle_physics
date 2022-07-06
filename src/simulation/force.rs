@@ -10,7 +10,9 @@ pub enum Force {
         force: Vec2,
     },
 
-    /// A general restoring force (F = -kx^n - bv) that attempts to satisfy a given constraint. Ex:
+    /// A general restoring force (F = -kx^n - bv) that attempts to satisfy a given constraint.
+    /// 
+    /// Examples:
     /// - gravity { (Link)MaxDistance, G*mass*mass, -2, 0 }
     /// - dampened spring between Particles { LinkFixedDistance, stiffness, 1, 0.5 }
     /// - stiff pendulum { FixedDistance, 99, 1, 99 }
@@ -22,15 +24,13 @@ pub enum Force {
     },
 
     /// A simple downwards pull of gravity (F = -mg)
-    WorldGravity {
-        particle: &mut Particle,
-        g: f64,
-    },
+    WorldGravity { particle: &mut Particle, g: f64 },
 
     /// Newtonian gravitational attraction between two Particles
     Gravity {
         particle1: &mut Particle,
         particle2: &mut Particle,
+        G: f64,
     },
 
     /// Drag force. [Wikipedia](https://en.wikipedia.org/wiki/Drag_equation)
@@ -43,6 +43,19 @@ pub enum Force {
 impl Force {
     /// Send the Force to the Particle(s)
     fn send_force(self: &Self) {
-        todo!();
+        match self {
+            Force::Raw { particle, force } => particle.forces.push(force),
+            Force::ConstraintForce { .. } => todo!(),
+            Force::WorldGravity { particle, g } => particle.forces.push(Vec2 {
+                x: 0.0,
+                y: -particle.mass * g,
+            }),
+            Force::Gravity {
+                particle1,
+                particle2,
+                G,
+            } => todo!(),
+            Force::Drag { particle, strength } => todo!(),
+        }
     }
 }

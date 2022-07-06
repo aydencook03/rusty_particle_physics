@@ -2,7 +2,7 @@ pub mod body;
 
 use crate::math::Vec2;
 
-/// A physical particle.  Is only aware of its own properties, state, and the forces acting on it (obeys locality)
+/// A physical particle. Is only aware of its own properties, state, and the forces acting on it (obeys locality)
 #[derive(Default)]
 pub struct Particle {
     mass: f64,
@@ -38,7 +38,7 @@ impl Particle {
         self.pos += self.vel * dt;
     }
 
-    /// A second-order symplectic integrator that updates the Particle (uses Basic Störmer–Verlet)
+    /// A second-order symplectic integrator that updates the Particle (uses ?)
     fn verlet_update(self: &mut Self, dt: f64) {
         todo!();
     }

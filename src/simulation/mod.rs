@@ -1,8 +1,8 @@
 pub mod constraint;
 pub mod force;
 
-use crate::matter::Particle;
 use crate::matter::body::Body;
+use crate::matter::Particle;
 use constraint::Constraint;
 use force::Force;
 
@@ -15,7 +15,7 @@ pub struct Sim {
 }
 
 impl Sim {
-    fn new() -> Sim {
+    pub fn new() -> Sim {
         Sim {
             updates_per_sec: 60,
             constraint_passes: 3,
@@ -37,9 +37,9 @@ impl Sim {
         }
     }
 
-    fn update_particles(self: &Self) {
+    fn update_particles(self: &Self, dt: f64) {
         for particle in self.particles {
-            particle.symplectic_euler_update();
+            particle.symplectic_euler_update(dt);
         }
     }
 
@@ -48,14 +48,12 @@ impl Sim {
     }
 
     fn add_body(self: &mut Self, body: Body) {
-        body.push_to_vec(self.particles);
+        todo!();
     }
 
-    fn run(self: &Self) {
-        /*
+    pub fn run(self: &Self) {
         self.send_forces_to_particles();
-        self.update_particles(self.dt);
+        self.update_particles(1.0 / self.updates_per_sec);
         self.handle_static_constraints();
-        */
     }
 }
