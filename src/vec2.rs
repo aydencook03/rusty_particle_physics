@@ -1,6 +1,6 @@
 /// A 2d euclidean vector
 #[derive(Copy, Clone, Default)]
-pub struct Vec2 {
+struct Vec2 {
     x: f64,
     y: f64,
 }
