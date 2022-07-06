@@ -1,3 +1,5 @@
+pub mod body;
+
 use crate::math::Vec2;
 
 /// A physical particle.  Is only aware of its own properties, state, and the forces acting on it (obeys locality)

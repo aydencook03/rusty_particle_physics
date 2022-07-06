@@ -1,9 +1,10 @@
-mod force;
-mod constraint;
+pub mod constraint;
+pub mod force;
 
-use crate::particle::Particle;
-use force::Force;
+use crate::matter::Particle;
+use crate::matter::body::Body;
 use constraint::Constraint;
+use force::Force;
 
 pub struct Sim {
     updates_per_sec: u8,
@@ -46,9 +47,9 @@ impl Sim {
         todo!();
     }
 
-    /* fn add_body(self: &mut Self, body: Body) {
+    fn add_body(self: &mut Self, body: Body) {
         body.push_to_vec(self.particles);
-    } */
+    }
 
     fn run(self: &Self) {
         /*
