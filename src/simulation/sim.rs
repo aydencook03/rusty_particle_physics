@@ -3,7 +3,7 @@ use crate::matter::particle::Particle;
 use crate::simulation::constraint::Constraint;
 use crate::simulation::force::Force;
 
-struct Sim {
+pub struct Sim {
     updates_per_sec: u8,
     constraint_passes: u8,
     particles: Vec<Particle>,

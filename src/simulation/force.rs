@@ -1,9 +1,9 @@
 use super::constraint::Constraint;
 use crate::vec2::Vec2;
-use crate::matter::Particle;
+use crate::matter::particle::Particle;
 
 /// Force on a Particle or between interacting Particles
-enum Force {
+pub enum Force {
     /// A raw 2d force
     Raw {
         particle: &mut Particle,

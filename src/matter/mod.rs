@@ -1,2 +1,2 @@
-mod particle;
-mod body;
+pub mod particle;
+pub mod body;

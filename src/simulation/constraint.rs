@@ -1,9 +1,9 @@
 use crate::vec2::Vec2;
-use crate::matter::Particle;
+use crate::matter::particle::Particle;
 
 /// Constraint on a Particle or between linked Particles.
 /// This simply holds the data, and can be used as a static constraint or a constraint force elsewhere
-enum Constraint {
+pub enum Constraint {
     /// Pin a Particle to a point
     PinToPoint {
         particle: &mut Particle,
