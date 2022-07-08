@@ -15,7 +15,7 @@ pub struct Particle {
 }
 
 impl Particle {
-    /// Constructor function
+    /// Constructor function for a default particle
     fn new() -> Particle {
         Particle {
             mass: 10.0,

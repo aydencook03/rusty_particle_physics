@@ -13,7 +13,7 @@ impl Vec2 {
         }
     }
 
-    /// Returns the magnitude of the Vec2d
+    /// Returns the magnitude of the Vec2
     fn mag(self: &Self) -> f64 {
         (self.x * self.x + self.y * self.y).powf(0.5_f64)
     }

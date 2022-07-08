@@ -1,11 +1,12 @@
 # Unified Particle Simulation
 
 ## References:
-- **[Youtube playlist for ideas](https://youtube.com/playlist?list=PLvypLlLlZuNhcdtPKfQ25cpmhBuWWDZzR)**
-- **Papers**
+- Youtube [playlist](https://youtube.com/playlist?list=PLvypLlLlZuNhcdtPKfQ25cpmhBuWWDZzR) for ideas
+- Miles Macklin's [work](http://blog.mmacklin.com/)
+- Papers:
     - uno
 
 ## Simulation Methods:
-- constraints (position based dynamics/solver)
-- forces (force based dynamics)
-- impulses (impulse based dynamics)
+- Constraints (position based dynamics)
+- Forces (force based dynamics)
+- Impulses (impulse based dynamics)

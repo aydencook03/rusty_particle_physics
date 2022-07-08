@@ -1,6 +1,6 @@
-use super::constraint::Constraint;
 use crate::vec2::Vec2;
 use crate::matter::particle::Particle;
+use super::constraint::Constraint;
 
 /// Force on a Particle or between interacting Particles
 pub enum Force {
@@ -11,7 +11,7 @@ pub enum Force {
     },
 
     /// A general restoring force (F = -kx^n - bv) that attempts to satisfy a given constraint.
-    /// 
+    ///
     /// Examples:
     /// - gravity { (Link)MaxDistance, G*mass*mass, -2, 0 }
     /// - dampened spring between Particles { LinkFixedDistance, stiffness, 1, 0.5 }
