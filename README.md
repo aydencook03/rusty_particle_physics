@@ -1,4 +1,4 @@
-# Rusty Particle Simulation
+# Rusty Particle Physics
 
 ## Technical Scope
 This is a classical, non-relativistic, non-field-theoretic, particle based physics engine.
