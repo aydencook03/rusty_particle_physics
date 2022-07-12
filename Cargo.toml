@@ -1,5 +1,5 @@
 [package]
-name = "unified_particle_simulation"
+name = "rusty_particle_physics"
 version = "0.1.0"
 edition = "2021"
 

@@ -6,11 +6,19 @@ pub struct Vec2 {
 }
 
 impl Vec2 {
-    /// Constructor function: returns a zero Vec2d (using Default for f64)
+    /// Default constructor function: returns a zero Vec2 (using Default for f64)
     fn new() -> Vec2 {
         Vec2 {
             ..Default::default()
         }
+    }
+
+    fn new_euclid(x: f64, y: f64) -> Vec2 {
+        todo!();
+    }
+
+    fn new_polar(r: f64, angle: f64) -> Vec2 {
+        todo!();
     }
 
     /// Returns the magnitude of the Vec2

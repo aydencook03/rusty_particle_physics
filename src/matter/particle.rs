@@ -3,14 +3,18 @@ use crate::vec2::Vec2;
 /// A physical particle. Is only aware of its own properties, state, and the forces acting on it (obeys locality)
 #[derive(Default)]
 pub struct Particle {
+    /// mass of the particle
     mass: f64,
-    //charge: f64,
     radius: f64,
-    color: (u8, u8, u8),
+    /// color: (r, g, b, alpha)
+    color: (u8, u8, u8, u8),
     /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
     group_num: u8,
+    /// 2-dimensional position of particle
     pos: Vec2,
+    /// 2-dimensional velocity of particle
     vel: Vec2,
+    /// a collection of all of the forces acting on the particle
     forces: Vec<Vec2>,
 }
 

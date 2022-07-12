@@ -1,7 +1,7 @@
 use crate::matter::particle::Particle;
 use crate::matter::body::Body;
-use crate::simulation::force::Force;
-use crate::simulation::constraint::Constraint;
+use crate::dynamics::force::Force;
+use crate::dynamics::constraint::Constraint;
 
 pub struct Sim {
     updates_per_sec: u8,
