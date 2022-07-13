@@ -1,30 +1,31 @@
 use crate::matter::particle::Particle;
-use crate::matter::body::Body;
 use crate::dynamics::force::Force;
 use crate::dynamics::constraint::Constraint;
 
 #[derive(Default)]
 pub struct Sim {
-    updates_per_sec: u8,
-    renders_per_sec: u8,
-    constraint_passes: u8,
-    particles: Vec<Particle>,
-    constraints: Vec<Constraint>,
-    forces: Vec<Force>,
+    pub updates_per_sec: u8,
+    dt: f64,
+    pub renders_per_sec: u8,
+    pub constraint_passes: u8,
+    pub particles: Vec<Particle>,
+    pub constraints: Vec<Constraint>,
+    pub forces: Vec<Force>,
 }
 
 impl Sim {
-    /// Constructs a default Sim
-    fn new() -> Sim {
+    /// Construct a Sim
+    pub fn new() -> Sim {
         Sim {
             updates_per_sec: 60,
             renders_per_sec: 60,
             constraint_passes: 3,
+            dt: 1.0 / 60.0,
             ..Default::default()
         }
     }
 
-    fn handle_static_constraints(self: &Self) {
+    fn handle_constraints(self: &Self) {
         for _ in 0..self.constraint_passes {
             for constraint in &self.constraints {
                 constraint.handle();
@@ -44,23 +45,19 @@ impl Sim {
         }
     }
 
-    fn add_particle(self: &mut Self) {
+    pub fn step_simulation(self: &mut Self) {
+        // what should the order of these be?
+        // What should I do about dt?
+        self.handle_constraints();
+        self.send_forces_to_particles();
+        self.update_particles(self.dt);
+    }
+
+    pub fn render(self: &Self) {
         todo!();
     }
 
-    fn add_body(self: &mut Self, body: Body) {
-        todo!();
-    }
-
-    fn step_simulation(self: &Self) {
-        todo!();
-    }
-
-    fn render(self: &Self) {
-        todo!();
-    }
-
-    fn run(self: &Self) {
+    pub fn run(self: &Self) {
         todo!();
     }
 }

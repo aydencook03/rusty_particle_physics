@@ -3,9 +3,3 @@ pub enum Body {
     Rect { width: f64, height: f64 },
     // hand draw shapes?
 }
-
-impl Body {
-    fn push_to_vec() {
-        todo!();
-    }
-}

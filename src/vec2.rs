@@ -1,8 +1,8 @@
 /// A 2d euclidean vector
 #[derive(Copy, Clone, Default)]
 pub struct Vec2 {
-    x: f64,
-    y: f64,
+    pub x: f64,
+    pub y: f64,
 }
 
 impl Vec2 {

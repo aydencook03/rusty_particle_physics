@@ -4,23 +4,23 @@ use crate::vec2::Vec2;
 #[derive(Default)]
 pub struct Particle {
     /// mass of the particle
-    mass: f64,
-    radius: f64,
+    pub mass: f64,
+    pub radius: f64,
     /// color: (r, g, b, alpha)
-    color: (u8, u8, u8, u8),
+    pub color: (u8, u8, u8, u8),
     /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
-    group_num: u8,
+    pub group_num: u8,
     /// 2-dimensional position of particle
-    pos: Vec2,
+    pub pos: Vec2,
     /// 2-dimensional velocity of particle
-    vel: Vec2,
+    pub vel: Vec2,
     /// a collection of all of the forces acting on the particle
-    forces: Vec<Vec2>,
+    pub forces: Vec<Vec2>,
 }
 
 impl Particle {
     /// Constructor function for a default particle
-    fn new() -> Particle {
+    pub fn new() -> Particle {
         Particle {
             mass: 10.0,
             radius: 10.0,
@@ -47,7 +47,7 @@ impl Particle {
     }
 
     /// A second-order symplectic integrator that updates the Particle (uses ?)
-    fn verlet_update(self: &mut Self, dt: f64) {
+    pub fn verlet_update(self: &mut Self, dt: f64) {
         todo!();
     }
 }
