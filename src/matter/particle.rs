@@ -29,15 +29,21 @@ impl Particle {
         }
     }
 
-    /// A first-order symplectic integrator that updates the Particle (uses Semi-implicic/Symplectic Euler)
-    fn symplectic_euler_update(self: &mut Self, dt: f64) {
-        let mut accel = Vec2::new();
-        for force in self.forces {
-            accel += force / self.mass;
+    /// A first-order symplectic integrator that updates the Particle (uses Semi-implicit/Symplectic Euler).
+    /// 
+    /// A classical particle behaves according to:
+    /// $$\frac{d}{dt}\begin{bmatrix}\vec{x} \\\ \vec{v}\end{bmatrix}=\begin{bmatrix}\vec{v} \\\ \frac{1}{m}\Sigma\vec{F}\end{bmatrix}$$
+    /// 
+    /// This numerical integration scheme is a first-order symplectic integrator that solves this differential equation using the following steps:
+    /// $$\vec{v} _{n+1} = \vec{v} _{n} + \frac{1}{m}\Sigma\vec{F} _{n}\Delta t$$
+    /// $$\vec{x} _{n+1} = \vec{x} _{n} + \vec{v} _{n+1}\Delta t$$
+    pub fn symplectic_euler_update(self: &mut Self, dt: f64) {
+        let mut total_force = Vec2::new();
+        for force in &mut self.forces {
+            //total_force += force;
         }
-        self.forces.clear(); // should I do this?
-        self.vel += accel * dt;
-        self.pos += self.vel * dt;
+        //self.vel += (total_force / self.mass) * dt;
+        //self.pos += self.vel * dt;
     }
 
     /// A second-order symplectic integrator that updates the Particle (uses ?)
