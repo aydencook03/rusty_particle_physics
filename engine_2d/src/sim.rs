@@ -1,12 +1,12 @@
 use crate::matter::particle::Particle;
 use crate::dynamics::force::Force;
 use crate::dynamics::constraint::Constraint;
+//use crate::rendering::Renderer;
 
 #[derive(Default)]
 pub struct Sim {
     pub updates_per_sec: u8,
-    dt: f64,
-    pub renders_per_sec: u8,
+    //pub renderer: Option<impl Renderer>,
     pub constraint_passes: u8,
     pub particles: Vec<Particle>,
     pub constraints: Vec<Constraint>,
@@ -15,12 +15,11 @@ pub struct Sim {
 
 impl Sim {
     /// Construct a Sim
-    pub fn new() -> Sim {
+    pub fn new(updates_per_sec: u8, /*renderer: Option<impl Renderer>*/) -> Sim {
         Sim {
-            updates_per_sec: 60,
-            renders_per_sec: 60,
+            updates_per_sec,
+            //renderer,
             constraint_passes: 3,
-            dt: 1.0 / 60.0,
             ..Default::default()
         }
     }
@@ -41,7 +40,7 @@ impl Sim {
 
     fn update_particles(self: &mut Self, dt: f64) {
         for particle in &mut self.particles {
-            particle.symplectic_euler_update(dt);
+            particle.update(dt);
         }
     }
 
@@ -50,7 +49,7 @@ impl Sim {
         // What should I do about dt?
         self.handle_constraints();
         self.send_forces_to_particles();
-        self.update_particles(self.dt);
+        self.update_particles(1.0 / (self.updates_per_sec as f64));
     }
 
     pub fn render(self: &Self) {

@@ -2,4 +2,5 @@
 
 members = [
   "engine_2d",
+  "testing_renderer"
 ]

@@ -38,7 +38,7 @@ impl Particle {
     /// This numerical integration scheme is a first-order symplectic integrator that solves this differential equation using the following steps:
     /// $$\vec{v} _{n+1} = \vec{v} _{n} + \frac{1}{m}\Sigma\vec{F} _{n}\Delta t$$
     /// $$\vec{x} _{n+1} = \vec{x} _{n} + \vec{v} _{n+1}\Delta t$$
-    pub fn symplectic_euler_update(self: &mut Self, dt: f64) {
+    pub fn update(self: &mut Self, dt: f64) {
         let mut total_force = Vec2::new();
         for force in &mut self.forces {
             total_force += *force;
