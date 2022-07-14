@@ -48,6 +48,6 @@ impl Particle {
 
     /// A second-order symplectic integrator that updates the Particle (uses ?)
     pub fn verlet_update(self: &mut Self, dt: f64) {
-        todo!();
+        todo!("{}", dt);
     }
 }

@@ -35,10 +35,32 @@ impl Vec2 {
     }
 }
 
-// This is so that we can do things like `total_force += force`
+/// So we can add vectors together
 impl core::ops::AddAssign<Vec2> for Vec2 {
     fn add_assign(self: &mut Self, rhs: Vec2) {
         self.x += rhs.x;
         self.y += rhs.y;
+    }
+}
+
+/// So we can multiply vectors by a scalar
+impl core::ops::Mul<f64> for Vec2 {
+    type Output = Vec2;
+    fn mul(self: Self, rhs: f64) -> Self::Output {
+        Vec2 {
+            x: self.x * rhs,
+            y: self.y * rhs,
+        }
+    }
+}
+
+/// So we can divide vectors by a scalar
+impl core::ops::Div<f64> for Vec2 {
+    type Output = Vec2;
+    fn div(self: Self, rhs: f64) -> Self::Output {
+        Vec2 {
+            x: self.x / rhs,
+            y: self.y / rhs,
+        }
     }
 }
