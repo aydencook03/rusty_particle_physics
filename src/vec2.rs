@@ -31,6 +31,14 @@ impl Vec2 {
 
     /// Returns the magnitude of the Vec2
     pub fn mag(self: &Self) -> f64 {
-        (self.x * self.x + self.y * self.y).powf(0.5_f64)
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+
+// This is so that we can do things like `total_force += force`
+impl core::ops::AddAssign<Vec2> for Vec2 {
+    fn add_assign(self: &mut Self, rhs: Vec2) {
+        self.x += rhs.x;
+        self.y += rhs.y;
     }
 }

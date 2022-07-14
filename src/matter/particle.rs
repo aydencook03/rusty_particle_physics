@@ -40,10 +40,10 @@ impl Particle {
     pub fn symplectic_euler_update(self: &mut Self, dt: f64) {
         let mut total_force = Vec2::new();
         for force in &mut self.forces {
-            //total_force += force;
+            total_force += *force;
         }
-        //self.vel += (total_force / self.mass) * dt;
-        //self.pos += self.vel * dt;
+        self.vel += (total_force / self.mass) * dt;
+        self.pos += self.vel * dt;
     }
 
     /// A second-order symplectic integrator that updates the Particle (uses ?)
