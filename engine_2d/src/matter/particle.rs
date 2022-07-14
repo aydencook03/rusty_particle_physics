@@ -5,14 +5,15 @@ use crate::vec2::Vec2;
 pub struct Particle {
     /// mass of the particle
     pub mass: f64,
+    /// radius of the particle
     pub radius: f64,
     /// color: (r, g, b, alpha)
     pub color: (u8, u8, u8, u8),
     /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
     pub group_num: u8,
-    /// 2-dimensional position of particle
+    /// 2-dimensional position of the particle
     pub pos: Vec2,
-    /// 2-dimensional velocity of particle
+    /// 2-dimensional velocity of the particle
     pub vel: Vec2,
     /// a collection of all of the forces acting on the particle
     pub forces: Vec<Vec2>,
@@ -29,7 +30,7 @@ impl Particle {
         }
     }
 
-    /// A first-order symplectic integrator that updates the Particle (uses Semi-implicit/Symplectic Euler).
+    /// An explicit, first-order symplectic integrator that updates the Particle (uses Semi-implicit/Symplectic Euler).
     /// 
     /// A classical particle behaves according to:
     /// $$\frac{d}{dt}\begin{bmatrix}\vec{x} \\\ \vec{v}\end{bmatrix}=\begin{bmatrix}\vec{v} \\\ \frac{1}{m}\Sigma\vec{F}\end{bmatrix}$$

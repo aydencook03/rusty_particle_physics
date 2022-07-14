@@ -8,9 +8,7 @@ pub struct Vec2 {
 impl Vec2 {
     /// Constructor function for default Vec2: returns a zero Vec2 (using Default for f64)
     pub fn new() -> Vec2 {
-        Vec2 {
-            ..Default::default()
-        }
+        Self::default()
     }
 
     /// Create a Vec2 using x and y components
