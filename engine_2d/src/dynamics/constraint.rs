@@ -6,10 +6,10 @@
 pub enum Constraint {
     /*
     /// The fundamental type of constraint.
-    /// 
+    ///
     /// The other Constraint types usually return a configured GeneralConstraint when being handled.
     GeneralConstraint {
-        
+
     },
 
     /// Pin a Particle to a point

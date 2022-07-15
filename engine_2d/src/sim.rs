@@ -1,6 +1,6 @@
-use crate::matter::particle::Particle;
-use crate::dynamics::force::Force;
 use crate::dynamics::constraint::Constraint;
+use crate::dynamics::force::Force;
+use crate::matter::particle::Particle;
 //use crate::rendering::Renderer;
 
 #[derive(Default)]
@@ -15,7 +15,7 @@ pub struct Sim {
 
 impl Sim {
     /// Construct a Sim
-    pub fn new(updates_per_sec: u8, /*renderer: Option<impl Renderer>*/) -> Sim {
+    pub fn new(updates_per_sec: u8 /*renderer: Option<impl Renderer>*/) -> Sim {
         Sim {
             updates_per_sec,
             //renderer,

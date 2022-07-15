@@ -8,10 +8,7 @@ pub struct Vec2 {
 impl Vec2 {
     /// Create a Vec2 using x and y components
     pub fn new(x: f64, y: f64) -> Vec2 {
-        Vec2 {
-            x,
-            y,
-        }
+        Vec2 { x, y }
     }
 
     /// Create a Vec2 using polar components
@@ -36,7 +33,7 @@ impl core::ops::AddAssign<Vec2> for Vec2 {
     }
 }
 
-/// So we can multiply vectors by a scalar
+/// So we can multiply vectors by a scalar f64
 impl core::ops::Mul<f64> for Vec2 {
     type Output = Vec2;
     fn mul(self: Self, rhs: f64) -> Self::Output {
@@ -47,7 +44,7 @@ impl core::ops::Mul<f64> for Vec2 {
     }
 }
 
-/// So we can divide vectors by a scalar
+/// So we can divide vectors by a scalar f64
 impl core::ops::Div<f64> for Vec2 {
     type Output = Vec2;
     fn div(self: Self, rhs: f64) -> Self::Output {

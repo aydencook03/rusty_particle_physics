@@ -4,5 +4,9 @@ pub enum RenderMode {
 }
 
 pub trait Renderer {
-    const MODE: RenderMode;
+    type Name;
+    fn init() -> Self::Name;
+    fn run(self: &Self);
+    // model after the web's requestAnimationFrame. calls run. provide default implementation.
+    fn request_next_frame(self: &Self, delay: f64);
 }

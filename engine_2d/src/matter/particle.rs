@@ -31,15 +31,16 @@ impl Particle {
     }
 
     /// An explicit, first-order symplectic integrator that updates the Particle (uses Semi-implicit/Symplectic Euler).
-    /// 
+    ///
     /// A classical particle behaves according to:
     /// $$\frac{d}{dt}\begin{bmatrix}\vec{x} \\\ \vec{v}\end{bmatrix}=\begin{bmatrix}\vec{v} \\\ \frac{1}{m}\Sigma\vec{F}\end{bmatrix}$$
-    /// 
+    ///
     /// This numerical integration scheme is a first-order symplectic integrator that solves this differential equation using the following steps:
     /// $$\vec{v} _{n+1} = \vec{v} _{n} + \frac{1}{m}\Sigma\vec{F} _{n}\Delta t$$
     /// $$\vec{x} _{n+1} = \vec{x} _{n} + \vec{v} _{n+1}\Delta t$$
     pub fn update(self: &mut Self, dt: f64) {
         // creates a zero Vec2 using the Default trait's default() function
+        // equivalent to: let mut total_force: Vec2 = core::default::Default::default();
         let mut total_force = Vec2::default();
         for force in &mut self.forces {
             total_force += *force;

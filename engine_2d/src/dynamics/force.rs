@@ -6,7 +6,7 @@
 pub enum Force {
     /*
     /// The fundamental type of 2d force
-    /// 
+    ///
     /// The other Force types usually return a configured GeneralForce when being handled
     GeneralForce {
         particle1: Option<&mut Particle>,
