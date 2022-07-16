@@ -4,13 +4,23 @@ use crate::matter::particle::Particle;
 use crate::rendering::Renderer;
 
 pub enum RunMode {
-    RealTime { simulation_fps: u8, render_fps: u8 },
-    Baked { simulation_fps: u8, animation_fps: u8, animation_length: f64 },
+    RealTime {
+        simulation_fps: u8,
+        render_fps: u8,
+    },
+    Baked {
+        simulation_fps: u8,
+        animation_fps: u8,
+        animation_length: f64,
+    },
 }
 
 impl Default for RunMode {
     fn default() -> Self {
-        RunMode::RealTime { simulation_fps: 60, render_fps: 60 }
+        RunMode::RealTime {
+            simulation_fps: 60,
+            render_fps: 60,
+        }
     }
 }
 
@@ -32,18 +42,31 @@ impl Sim {
             renderer,
             constraint_passes: 3,
             ..Default::default()
-        }.as_real_time(60, 60)
+        }
+        .set_real_time(60, 60)
     }
 
-    pub fn as_real_time(mut self: Self, simulation_fps: u8, render_fps: u8) -> Sim {
-        self.run_mode = RunMode::RealTime { simulation_fps, render_fps };
+    pub fn set_real_time(mut self: Self, simulation_fps: u8, render_fps: u8) -> Sim {
+        self.run_mode = RunMode::RealTime {
+            simulation_fps,
+            render_fps,
+        };
         self.dt = 1.0 / (simulation_fps as f64);
 
         self
     }
 
-    pub fn as_baked(mut self: Self, simulation_fps: u8, animation_fps: u8, animation_length: f64) -> Sim {
-        self.run_mode = RunMode::Baked { simulation_fps, animation_fps, animation_length };
+    pub fn set_baked(
+        mut self: Self,
+        simulation_fps: u8,
+        animation_fps: u8,
+        animation_length: f64,
+    ) -> Sim {
+        self.run_mode = RunMode::Baked {
+            simulation_fps,
+            animation_fps,
+            animation_length,
+        };
         self.dt = 1.0 / (simulation_fps as f64);
 
         self
