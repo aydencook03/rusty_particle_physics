@@ -19,6 +19,11 @@ impl Vec2 {
         }
     }
 
+    /// Dot product with another Vec2
+    pub fn dot(self: &Self, other: &Vec2) -> f64 {
+        self.x*other.x + self.y*other.y
+    }
+
     /// Returns the magnitude of the Vec2
     pub fn mag(self: &Self) -> f64 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
