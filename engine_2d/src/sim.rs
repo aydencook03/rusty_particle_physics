@@ -3,7 +3,10 @@ use crate::dynamics::force::Force;
 use crate::matter::particle::Particle;
 use crate::rendering::Renderer;
 
+#[derive(Default)]
 pub enum RunMode {
+    #[default]
+    None,
     RealTime {
         simulation_fps: u8,
         render_fps: u8,
@@ -13,15 +16,6 @@ pub enum RunMode {
         animation_fps: u8,
         animation_length: f64,
     },
-}
-
-impl Default for RunMode {
-    fn default() -> Self {
-        RunMode::RealTime {
-            simulation_fps: 60,
-            render_fps: 60,
-        }
-    }
 }
 
 #[derive(Default)]
@@ -94,7 +88,6 @@ impl Sim {
 
     pub fn step_simulation(self: &mut Self) {
         // what should the order of these be?
-        // What should I do about dt?
         self.handle_constraints();
         self.send_forces_to_particles();
         self.update_particles(self.dt);
