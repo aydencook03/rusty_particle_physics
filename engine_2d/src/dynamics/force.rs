@@ -33,7 +33,7 @@ pub enum Force<'a> {
     Gravity {
         particle1: &'a mut Particle,
         particle2: &'a mut Particle,
-        G: f64,
+        g: f64,
     },
 
     /// Drag force. [Wikipedia](https://en.wikipedia.org/wiki/Drag_equation)

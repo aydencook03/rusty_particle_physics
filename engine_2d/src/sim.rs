@@ -19,19 +19,19 @@ pub enum RunMode {
 }
 
 #[derive(Default)]
-pub struct Sim {
+pub struct Sim<'a> {
     pub run_mode: RunMode,
     pub renderer: Option<Box<dyn Renderer>>,
     pub constraint_passes: u8,
     pub particles: Vec<Particle>,
-    pub constraints: Vec<Constraint>,
-    pub forces: Vec<Force>,
+    pub constraints: Vec<Constraint<'a>>,
+    pub forces: Vec<Force<'a>>,
     dt: f64,
 }
 
-impl Sim {
+impl<'a> Sim<'a> {
     /// Construct a Sim
-    pub fn new(renderer: Option<Box<dyn Renderer>>) -> Sim {
+    pub fn new(renderer: Option<Box<dyn Renderer>>) -> Sim<'a> {
         Sim {
             renderer,
             constraint_passes: 3,
@@ -40,7 +40,7 @@ impl Sim {
         .set_real_time(60, 60)
     }
 
-    pub fn set_real_time(mut self: Self, simulation_fps: u8, render_fps: u8) -> Sim {
+    pub fn set_real_time(mut self: Self, simulation_fps: u8, render_fps: u8) -> Sim<'a> {
         self.run_mode = RunMode::RealTime {
             simulation_fps,
             render_fps,
@@ -55,7 +55,7 @@ impl Sim {
         simulation_fps: u8,
         animation_fps: u8,
         animation_length: f64,
-    ) -> Sim {
+    ) -> Sim<'a> {
         self.run_mode = RunMode::Baked {
             simulation_fps,
             animation_fps,
