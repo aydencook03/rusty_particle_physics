@@ -41,7 +41,7 @@ impl Particle {
     pub fn update(self: &mut Self, dt: f64) {
         // creates a zero Vec2 using the Default trait's default() function
         // equivalent to: let mut total_force: Vec2 = core::default::Default::default();
-        let mut total_force = Vec2::default();
+        let mut total_force = Vec2::new(0.0, 0.0);
         for force in &mut self.forces {
             total_force += *force;
         }
