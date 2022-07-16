@@ -1,12 +1,9 @@
-pub enum RenderMode {
-    RealTime { fps: u8 },
-    BakedAnimation { fps: u8, length: f64 },
-}
+use crate::sim::Sim;
 
 pub trait Renderer {
-    type Name;
-    fn init() -> Self::Name;
+    fn init(self: &Self, sim: &Sim);
     fn run(self: &Self);
+    fn paint(self: &Self, data_source: &Sim);
     // model after the web's requestAnimationFrame. calls run. provide default implementation.
     fn request_next_frame(self: &Self, delay: f64);
 }
