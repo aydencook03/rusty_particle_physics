@@ -6,10 +6,18 @@ use super::constraint::Constraint;
 pub enum Force<'a> {
     /// The fundamental type of 2d force
     ///
-    /// The other Force types usually return a configured GeneralForce when being handled
-    GeneralForce {
+    /// The other Force types usually return a configured GeneralForce or RawForce when being handled
+    InteractionForce {
         particle1: Option<&'a mut Particle>,
-        particle2: &'a Particle,
+        particle2: &'a mut Particle,
+        magnitude: f64,
+    },
+
+    /// The other type of fundamental 2d force. However, this one is less realistic than InteractionForce.
+    /// This is because it is not an interaction between two particles, meaning there can be no reaction force.
+    /// No reaction force means that total linear momentum will not be conserved, unlike in the real universe.
+    RawForce {
+        particle: &'a mut Particle,
         force: Vec2,
     },
 
