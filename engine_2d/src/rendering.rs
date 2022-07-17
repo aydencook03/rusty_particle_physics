@@ -7,8 +7,8 @@ pub trait IsRenderer {
     fn set_baked(self: &Self);
     // model after the web's requestAnimationFrame. calls paint. provide default implementation.
     /// Responsible for causing delays to sync simulation time and real time.
-    /// Is only used when the simulation is in RealTime mode.
-    fn delay(self: &Self);
+    /// Is only used when the simulation is needed to run in real time, not when creating an animation.
+    fn delay(self: &Self, dt: f64);
 }
 
 impl Default for Box<dyn IsRenderer> {
@@ -26,5 +26,5 @@ impl IsRenderer for SimpleDelayRenderer {
     fn events(self: &Self) {}
     fn set_real_time(self: &Self) {}
     fn set_baked(self: &Self) {}
-    fn delay(self: &Self) {}
+    fn delay(self: &Self, _dt: f64) {}
 }

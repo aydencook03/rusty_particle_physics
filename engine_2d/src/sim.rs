@@ -4,27 +4,11 @@ use crate::matter::particle::Particle;
 use crate::rendering::IsRenderer;
 
 #[derive(Default)]
-pub enum RunMode {
-    #[default]
-    None,
-    RealTime {
-        simulation_fps: u8,
-        render_fps: u8,
-    },
-    Baked {
-        simulation_fps: u8,
-        animation_fps: u8,
-        animation_length: f64,
-    },
-}
-
-#[derive(Default)]
 pub struct Sim<'a> {
-    pub run_mode: RunMode,
-    pub renderer: Box<dyn IsRenderer>,
     pub running: bool,
     pub time: f64,
-    dt: f64,
+    pub dt: f64,
+    pub renderer: Box<dyn IsRenderer>,
     pub constraint_passes: u8,
     pub particles: Vec<Particle>,
     pub constraints: Vec<Constraint<'a>>,
@@ -35,10 +19,16 @@ impl<'a> Sim<'a> {
     /// Construct a Sim
     pub fn new() -> Sim<'a> {
         Sim {
+            running: true,
             constraint_passes: 3,
             ..Default::default()
         }
-        .set_real_time(60, 60)
+        .set_fps(60)
+    }
+
+    pub fn set_fps(mut self: Self, simulation_fps: u8) -> Sim<'a> {
+        self.dt = 1.0 / (simulation_fps as f64);
+        self
     }
 
     pub fn set_renderer(mut self: Self, renderer: Option<Box<dyn IsRenderer>>) -> Sim<'a> {
@@ -46,32 +36,6 @@ impl<'a> Sim<'a> {
             None => Default::default(),
             Some(the_renderer) => the_renderer,
         };
-        self
-    }
-
-    pub fn set_real_time(mut self: Self, simulation_fps: u8, render_fps: u8) -> Sim<'a> {
-        self.run_mode = RunMode::RealTime {
-            simulation_fps,
-            render_fps,
-        };
-        self.dt = 1.0 / (simulation_fps as f64);
-
-        self
-    }
-
-    pub fn set_baked(
-        mut self: Self,
-        simulation_fps: u8,
-        animation_fps: u8,
-        animation_length: f64,
-    ) -> Sim<'a> {
-        self.run_mode = RunMode::Baked {
-            simulation_fps,
-            animation_fps,
-            animation_length,
-        };
-        self.dt = 1.0 / (simulation_fps as f64);
-
         self
     }
 
@@ -103,13 +67,18 @@ impl<'a> Sim<'a> {
         self.time += self.dt;
     }
 
-    pub fn run(self: &mut Self) {
+    pub fn run(self: &mut Self, _render_fps: u8) {
+        // This doesn't yet allow simulation_fps and render_fps to be different
         while self.running {
             // what should the order of these be?
             self.renderer.paint();
             self.step_simulation();
-            self.renderer.delay();
+            self.renderer.delay(self.dt);
             self.renderer.events();
         }
+    }
+
+    pub fn create_animation(self: &mut Self, _animation_fps: u8, _animation_length: f64) {
+        todo!();
     }
 }
