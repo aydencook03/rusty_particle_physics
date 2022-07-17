@@ -7,7 +7,7 @@ pub struct Particle {
     pub mass: f64,
     /// radius of the particle
     pub radius: f64,
-    /// color: (r, g, b, alpha)
+    /// 32-bit color: (r, g, b, alpha)
     pub color: (u8, u8, u8, u8),
     /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
     pub group_num: u8,
@@ -39,8 +39,6 @@ impl Particle {
     /// $$\vec{v} _{n+1} = \vec{v} _{n} + \frac{1}{m}\Sigma\vec{F} _{n}\Delta t$$
     /// $$\vec{x} _{n+1} = \vec{x} _{n} + \vec{v} _{n+1}\Delta t$$
     pub fn update(self: &mut Self, dt: f64) {
-        // creates a zero Vec2 using the Default trait's default() function
-        // equivalent to: let mut total_force: Vec2 = core::default::Default::default();
         let mut total_force = Vec2::new(0.0, 0.0);
         for force in &mut self.forces {
             total_force += *force;

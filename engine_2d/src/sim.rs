@@ -1,7 +1,7 @@
 use crate::dynamics::constraint::Constraint;
 use crate::dynamics::force::Force;
 use crate::matter::particle::Particle;
-use crate::rendering::Renderer;
+use crate::rendering::IsRenderer;
 
 #[derive(Default)]
 pub enum RunMode {
@@ -21,23 +21,32 @@ pub enum RunMode {
 #[derive(Default)]
 pub struct Sim<'a> {
     pub run_mode: RunMode,
-    pub renderer: Option<Box<dyn Renderer>>,
+    pub renderer: Box<dyn IsRenderer>,
+    pub running: bool,
+    pub time: f64,
+    dt: f64,
     pub constraint_passes: u8,
     pub particles: Vec<Particle>,
     pub constraints: Vec<Constraint<'a>>,
     pub forces: Vec<Force<'a>>,
-    dt: f64,
 }
 
 impl<'a> Sim<'a> {
     /// Construct a Sim
-    pub fn new(renderer: Option<Box<dyn Renderer>>) -> Sim<'a> {
+    pub fn new() -> Sim<'a> {
         Sim {
-            renderer,
             constraint_passes: 3,
             ..Default::default()
         }
         .set_real_time(60, 60)
+    }
+
+    pub fn set_renderer(mut self: Self, renderer: Option<Box<dyn IsRenderer>>) -> Sim<'a> {
+        self.renderer = match renderer {
+            None => Default::default(),
+            Some(the_renderer) => the_renderer,
+        };
+        self
     }
 
     pub fn set_real_time(mut self: Self, simulation_fps: u8, render_fps: u8) -> Sim<'a> {
@@ -91,13 +100,16 @@ impl<'a> Sim<'a> {
         self.handle_constraints();
         self.send_forces_to_particles();
         self.update_particles(self.dt);
+        self.time += self.dt;
     }
 
-    pub fn render(self: &Self) {
-        todo!();
-    }
-
-    pub fn run(self: &Self) {
-        todo!();
+    pub fn run(self: &mut Self) {
+        while self.running {
+            // what should the order of these be?
+            self.renderer.paint();
+            self.step_simulation();
+            self.renderer.delay();
+            self.renderer.events();
+        }
     }
 }

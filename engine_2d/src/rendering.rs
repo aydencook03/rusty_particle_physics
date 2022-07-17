@@ -1,9 +1,30 @@
-use crate::sim::Sim;
+pub trait IsRenderer {
+    /// Initialize window, surface, events, etc.
+    fn init(self: &Self, width: u32, height: u32);
+    fn paint(self: &Self);
+    fn events(self: &Self);
+    fn set_real_time(self: &Self);
+    fn set_baked(self: &Self);
+    // model after the web's requestAnimationFrame. calls paint. provide default implementation.
+    /// Responsible for causing delays to sync simulation time and real time.
+    /// Is only used when the simulation is in RealTime mode.
+    fn delay(self: &Self);
+}
 
-pub trait Renderer {
-    fn init(self: &Self, sim: &Sim);
-    fn run(self: &Self);
-    fn paint(self: &Self, data_source: &Sim);
-    // model after the web's requestAnimationFrame. calls run. provide default implementation.
-    fn request_next_frame(self: &Self, delay: f64);
+impl Default for Box<dyn IsRenderer> {
+    fn default() -> Self {
+        Box::new(SimpleDelayRenderer)
+    }
+}
+
+/// The default renderer that only has the functionality of delaying the simulation
+pub struct SimpleDelayRenderer;
+
+impl IsRenderer for SimpleDelayRenderer {
+    fn init(self: &Self, _width: u32, _height: u32) {}
+    fn paint(self: &Self) {}
+    fn events(self: &Self) {}
+    fn set_real_time(self: &Self) {}
+    fn set_baked(self: &Self) {}
+    fn delay(self: &Self) {}
 }

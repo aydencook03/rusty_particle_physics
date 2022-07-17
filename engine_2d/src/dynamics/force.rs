@@ -1,6 +1,6 @@
-use crate::vec2::Vec2;
-use crate::matter::particle::Particle;
 use super::constraint::Constraint;
+use crate::matter::particle::Particle;
+use crate::vec2::Vec2;
 
 /// Force on a Particle or between interacting Particles
 pub enum Force<'a> {

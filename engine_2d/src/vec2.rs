@@ -21,7 +21,7 @@ impl Vec2 {
 
     /// Dot product with another Vec2
     pub fn dot(self: &Self, other: &Vec2) -> f64 {
-        self.x*other.x + self.y*other.y
+        self.x * other.x + self.y * other.y
     }
 
     /// Returns the magnitude of the Vec2
@@ -30,11 +30,38 @@ impl Vec2 {
     }
 }
 
-/// So we can add vectors together
+impl core::ops::Add<Vec2> for Vec2 {
+    type Output = Vec2;
+    fn add(self: Self, rhs: Vec2) -> Self::Output {
+        Vec2 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+impl core::ops::Sub<Vec2> for Vec2 {
+    type Output = Vec2;
+    fn sub(self: Self, rhs: Vec2) -> Self::Output {
+        Vec2 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y,
+        }
+    }
+}
+
+/// So we can add assign vectors together
 impl core::ops::AddAssign<Vec2> for Vec2 {
     fn add_assign(self: &mut Self, rhs: Vec2) {
         self.x += rhs.x;
         self.y += rhs.y;
+    }
+}
+
+impl core::ops::SubAssign<Vec2> for Vec2 {
+    fn sub_assign(self: &mut Self, rhs: Vec2) {
+        self.x -= rhs.x;
+        self.y -= rhs.y;
     }
 }
 
@@ -57,5 +84,19 @@ impl core::ops::Div<f64> for Vec2 {
             x: self.x / rhs,
             y: self.y / rhs,
         }
+    }
+}
+
+impl core::ops::MulAssign<f64> for Vec2 {
+    fn mul_assign(self: &mut Self, rhs: f64) {
+        self.x *= rhs;
+        self.y *= rhs;
+    }
+}
+
+impl core::ops::DivAssign<f64> for Vec2 {
+    fn div_assign(self: &mut Self, rhs: f64) {
+        self.x /= rhs;
+        self.y /= rhs;
     }
 }
