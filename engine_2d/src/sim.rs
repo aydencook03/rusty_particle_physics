@@ -16,7 +16,7 @@ pub struct Sim<'a> {
 }
 
 impl<'a> Sim<'a> {
-    /// Construct a Sim
+    /// Construct a default Sim
     pub fn new() -> Sim<'a> {
         Sim {
             running: true,
@@ -24,6 +24,7 @@ impl<'a> Sim<'a> {
             ..Default::default()
         }
         .set_fps(60)
+        .set_renderer(Default::default(), 0, 0)
     }
 
     pub fn set_fps(mut self: Self, simulation_fps: u8) -> Sim<'a> {
@@ -31,11 +32,14 @@ impl<'a> Sim<'a> {
         self
     }
 
-    pub fn set_renderer(mut self: Self, renderer: Option<Box<dyn IsRenderer>>) -> Sim<'a> {
-        self.renderer = match renderer {
-            None => Default::default(),
-            Some(the_renderer) => the_renderer,
-        };
+    pub fn set_renderer(
+        mut self: Self,
+        renderer: Box<dyn IsRenderer>,
+        width: u32,
+        height: u32,
+    ) -> Sim<'a> {
+        self.renderer = renderer;
+        self.renderer.init(width, height);
         self
     }
 

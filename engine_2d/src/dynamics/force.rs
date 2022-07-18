@@ -4,9 +4,9 @@ use crate::vec2::Vec2;
 
 /// Force on a Particle or between interacting Particles
 pub enum Force<'a> {
-    /// The fundamental type of 2d force
+    /// The fundamental type of 2d force.
     ///
-    /// The other Force types usually return a configured GeneralForce or RawForce when being handled
+    /// The other Force types usually return a configured GeneralForce or RawForce when being handled.
     InteractionForce {
         particle1: Option<&'a mut Particle>,
         particle2: &'a mut Particle,
