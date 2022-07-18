@@ -63,12 +63,12 @@ impl<'a> Sim<'a> {
         }
     }
 
-    pub fn step_simulation(self: &mut Self) {
+    pub fn step_simulation(self: &mut Self, dt: f64) {
         // what should the order of these be?
         self.handle_constraints();
         self.send_forces_to_particles();
-        self.update_particles(self.dt);
-        self.time += self.dt;
+        self.update_particles(dt);
+        self.time += dt;
     }
 
     pub fn run(self: &mut Self, _render_fps: u8) {
@@ -76,7 +76,7 @@ impl<'a> Sim<'a> {
         while self.running {
             // what should the order of these be?
             self.renderer.paint();
-            self.step_simulation();
+            self.step_simulation(self.dt);
             self.renderer.delay(self.dt);
             self.renderer.events();
         }

@@ -10,6 +10,7 @@ impl IsRenderer for BevyRenderer {
     fn set_real_time(self: &Self) {}
     fn set_baked(self: &Self) {}
     fn delay(self: &Self, _dt: f64) {}
+    fn run(self: &Self) {}
 }
 
 fn main() {
