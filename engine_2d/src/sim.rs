@@ -1,14 +1,14 @@
 use crate::dynamics::constraint::Constraint;
 use crate::dynamics::force::Force;
 use crate::matter::particle::Particle;
-use crate::rendering::IsRenderer;
+//use crate::rendering::IsRenderer;
 
 #[derive(Default)]
 pub struct Sim<'a> {
     pub running: bool,
     pub time: f64,
-    pub dt: f64,
-    pub renderer: Box<dyn IsRenderer>,
+    //pub dt: f64,
+    //pub renderer: Box<dyn IsRenderer>,
     pub constraint_passes: u8,
     pub particles: Vec<Particle>,
     pub constraints: Vec<Constraint<'a>>,
@@ -23,12 +23,17 @@ impl<'a> Sim<'a> {
             constraint_passes: 3,
             ..Default::default()
         }
-        .set_fps(60)
-        .set_renderer(Default::default(), 0, 0)
+        //.set_fps(60)
+        //.set_renderer(Default::default(), 0, 0)
     }
 
+    pub fn dt_from_fps(fps: u8) -> f64 {
+        1.0 / (fps as f64)
+    }
+
+    /*
     pub fn set_fps(mut self: Self, simulation_fps: u8) -> Sim<'a> {
-        self.dt = 1.0 / (simulation_fps as f64);
+        self.dt = Sim::dt_from_fps(simulation_fps);
         self
     }
 
@@ -42,6 +47,7 @@ impl<'a> Sim<'a> {
         self.renderer.init(width, height);
         self
     }
+    */
 
     fn handle_constraints(self: &Self) {
         for _ in 0..self.constraint_passes {
@@ -64,13 +70,16 @@ impl<'a> Sim<'a> {
     }
 
     pub fn step_simulation(self: &mut Self, dt: f64) {
-        // what should the order of these be?
-        self.handle_constraints();
-        self.send_forces_to_particles();
-        self.update_particles(dt);
-        self.time += dt;
+        if self.running {
+            // what should the order of these be?
+            self.handle_constraints();
+            self.send_forces_to_particles();
+            self.update_particles(dt);
+            self.time += dt;
+        }
     }
 
+    /*
     pub fn run(self: &mut Self, _render_fps: u8) {
         // This doesn't yet allow simulation_fps and render_fps to be different
         while self.running {
@@ -85,4 +94,5 @@ impl<'a> Sim<'a> {
     pub fn create_animation(self: &mut Self, _animation_fps: u8, _animation_length: f64) {
         todo!();
     }
+    */
 }

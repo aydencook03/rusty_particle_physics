@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 rusty_particle_physics_2d = { path = "../engine_2d/" }
+winit = "0.26.1"
+pixels = "0.9.0"
