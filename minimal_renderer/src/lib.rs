@@ -12,8 +12,8 @@ use softbuffer::GraphicsContext;
 pub struct MinimalRenderer {
     pub width: u16,
     pub height: u16,
-    bg_color_u32: u32,
     buffer_len: usize,
+    bg_color_u32: u32,
     event_loop: EventLoop<()>,
     context: GraphicsContext<Window>,
     buffer: Vec<u32>,
@@ -45,8 +45,8 @@ impl MinimalRenderer {
         MinimalRenderer {
             width,
             height,
-            bg_color_u32,
             buffer_len,
+            bg_color_u32,
             event_loop,
             context: unsafe { GraphicsContext::new(window) }.unwrap(),
             buffer: vec![bg_color_u32; buffer_len],
@@ -65,8 +65,7 @@ impl MinimalRenderer {
     }
 
     pub fn run(mut self: Self, _sim: &mut Sim) {
-        let event_loop = self.event_loop;
-        event_loop.run(move |event, _, control_flow| {
+        self.event_loop.run(move |event, _, control_flow| {
             // ControlFlow::Poll continuously runs the event loop, even if the OS hasn't
             // dispatched any events. This is ideal for games and similar applications.
             *control_flow = ControlFlow::Poll;
