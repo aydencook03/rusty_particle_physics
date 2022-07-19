@@ -38,7 +38,7 @@ impl MinimalRenderer {
         let width: u16 = window.inner_size().width.try_into().unwrap();
         let height: u16 = window.inner_size().height.try_into().unwrap();
 
-        let buffer_len: usize = (width * height).try_into().unwrap();
+        let buffer_len = (width as usize) * (height as usize);
 
         let bg_color_u32 = MinimalRenderer::rgb_to_u32(color);
 
