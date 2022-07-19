@@ -6,9 +6,9 @@ pub mod vec2;
 
 pub mod prelude {
     pub use crate::{
-        vec2::Vec2,
+        dynamics::{constraint::Constraint, force::Force},
         matter::particle::Particle,
-        dynamics::{force::Force, constraint::Constraint},
         sim::Sim,
+        vec2::Vec2,
     };
 }

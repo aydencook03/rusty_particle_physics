@@ -27,7 +27,9 @@ pub struct SimpleDelayRenderer;
 
 impl IsRenderer for SimpleDelayRenderer {
     type Output = SimpleDelayRenderer;
-    fn new(_width: u32, _height: u32) -> Self::Output {SimpleDelayRenderer}
+    fn new(_width: u32, _height: u32) -> Self::Output {
+        SimpleDelayRenderer
+    }
     fn paint(self: &Self) {}
     fn events(self: &Self) {}
     fn set_real_time(self: &Self) {}
