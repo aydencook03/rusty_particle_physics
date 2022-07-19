@@ -1,11 +1,16 @@
 [package]
-name = "pixels_renderer"
+name = "minimal_renderer"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# the physics engine
 rusty_particle_physics_2d = { path = "../engine_2d/" }
+# used to open a window and event loop
 winit = "0.26.1"
-pixels = "0.9.0"
+# used to create a pixel framebuffer of the window
+softbuffer = "0.1.1"
+# used to turn paths and shapes into pixels
+tiny-skia = "0.7.0"

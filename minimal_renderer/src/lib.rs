@@ -7,16 +7,21 @@ use winit::{
     window::{Window, WindowBuilder},
 };
 
-use pixels::{Pixels, SurfaceTexture};
+use softbuffer::GraphicsContext;
 
-pub struct PixelsRenderer {
+pub struct MinimalRenderer {
+    pub width: u32,
+    pub height: u32,
     event_loop: EventLoop<()>,
-    window: Window,
-    pixels: Pixels,
+    pub context: GraphicsContext<Window>,
+    pub buffer: Vec<u32>,
 }
 
-impl PixelsRenderer {
-    pub fn new(width: u32, height: u32) -> PixelsRenderer {
+impl MinimalRenderer {
+    pub fn new(width: u32, height: u32) -> MinimalRenderer {
+        // A "context" that provides a way to retrieve events from the system and the windows registered to it.
+        // EventLoop::new() initializes everything that will be required to create windows.
+        // For example on Linux creating an event loop opens a connection to the X or Wayland server.
         let event_loop = EventLoop::new();
 
         let window = {
@@ -28,16 +33,14 @@ impl PixelsRenderer {
                 .unwrap()
         };
 
-        let pixels = {
-            let size = window.inner_size();
-            let surface_texture = SurfaceTexture::new(size.width, size.height, &window);
-            Pixels::new(width, height, surface_texture).unwrap()
-        };
+        let buffer_len = width * height;
 
-        PixelsRenderer {
-            window,
+        MinimalRenderer {
+            width,
+            height,
             event_loop,
-            pixels,
+            context: unsafe { GraphicsContext::new(window) }.unwrap(),
+            buffer: Vec::with_capacity(buffer_len.try_into().unwrap()),
         }
     }
 
