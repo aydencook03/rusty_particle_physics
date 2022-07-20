@@ -13,4 +13,4 @@ winit = "0.26.1"
 # used to access the framebuffer of the window
 softbuffer = "0.1.1"
 # used to draw paths and shapes on the framebuffer
-embedded-graphics = "0.7.1"
+tiny-skia = "0.7.0"

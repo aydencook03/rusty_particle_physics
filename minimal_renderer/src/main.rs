@@ -8,5 +8,13 @@ fn main() {
     let window = MinimalRenderer::new(WIDTH, HEIGHT);
     let mut sim = Sim::new();
 
-    window.run(&mut sim);
+    sim.particles.push({
+        let mut particle = Particle::new();
+        particle.pos = Vec2::new(50.0, 100.0);
+        particle.vel = Vec2::new(50.0, -70.0);
+        particle.forces.push(Vec2::new(0.0, 400.0));
+        particle
+    });
+
+    window.run(sim);
 }

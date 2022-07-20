@@ -7,18 +7,24 @@ use winit::{
     window::{Window, WindowBuilder},
 };
 
+use std::time::Instant;
+
 use softbuffer::GraphicsContext;
+
+use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Transform};
 
 const DEFAULT_COLOR: (u8, u8, u8) = (70, 70, 70);
 
 pub struct MinimalRenderer {
     pub width: u16,
     pub height: u16,
-    buffer_len: usize,
-    bg_color_u32: u32,
+    bg_color: (u8, u8, u8),
     event_loop: EventLoop<()>,
+    time: Instant,
     context: GraphicsContext<Window>,
-    buffer: Vec<u32>,
+    framebuffer: Vec<u32>,
+    draw_buffer: Pixmap,
+    style: Paint<'static>,
 }
 
 impl MinimalRenderer {
@@ -32,6 +38,7 @@ impl MinimalRenderer {
             let size = LogicalSize::new(width, height);
             WindowBuilder::new()
                 .with_inner_size(size)
+                .with_max_inner_size(size)
                 .with_title("Simulation")
                 .build(&event_loop)
                 .unwrap()
@@ -40,25 +47,26 @@ impl MinimalRenderer {
         let width: u16 = window.inner_size().width.try_into().unwrap();
         let height: u16 = window.inner_size().height.try_into().unwrap();
 
-        let buffer_len = (width as usize) * (height as usize);
-
-        let bg_color_u32 = MinimalRenderer::rgb_to_u32(DEFAULT_COLOR);
+        let mut style = Paint::default();
+        style.anti_alias = true;
 
         MinimalRenderer {
             width,
             height,
-            buffer_len,
-            bg_color_u32,
+            bg_color: DEFAULT_COLOR,
             event_loop,
+            time: Instant::now(),
             context: unsafe { GraphicsContext::new(window) }.unwrap(),
-            buffer: vec![bg_color_u32; buffer_len],
+            framebuffer: vec![0; (width as usize) * (height as usize)],
+            draw_buffer: Pixmap::new(width as u32, height as u32).unwrap(),
+            style,
         }
     }
 
     /// Converts from an rgb color to the 32-bit format that softbuffer uses.
-    /// 
+    ///
     /// Pixel format (u32): 00000000RRRRRRRRGGGGGGGGBBBBBBBB
-    pub fn rgb_to_u32(rgb: (u8, u8, u8)) -> u32 {
+    pub fn rgb_to_softbuffer(rgb: (u8, u8, u8)) -> u32 {
         let (r, g, b) = rgb;
         let r = (r as u32) << 16;
         let g = (g as u32) << 8;
@@ -68,11 +76,19 @@ impl MinimalRenderer {
     }
 
     pub fn with_color(mut self: Self, color: (u8, u8, u8)) -> Self {
-        self.bg_color_u32 = MinimalRenderer::rgb_to_u32(color);
+        self.bg_color = color;
         self
     }
 
-    pub fn run(mut self: Self, _sim: &mut Sim) {
+    pub fn width(self: &Self) -> f64 {
+        self.width as f64
+    }
+
+    pub fn height(self: &Self) -> f64 {
+        self.height as f64
+    }
+
+    pub fn run(mut self: Self, mut sim: Sim<'static>) {
         self.event_loop.run(move |event, _, control_flow| {
             // ControlFlow::Poll continuously runs the event loop, even if the OS hasn't
             // dispatched any events. This is ideal for games and similar applications.
@@ -85,17 +101,57 @@ impl MinimalRenderer {
                 } => {
                     // stop the event loop, therefore closing the window
                     *control_flow = ControlFlow::Exit
-                },
+                }
                 Event::MainEventsCleared => {
-                    // update & render
+                    // update & render after other events are handled
 
-                    // clear the buffer to the background color
-                    self.buffer = vec![self.bg_color_u32; self.buffer_len];
+                    // clear the buffers
+                    self.draw_buffer.fill(Color::from_rgba8(
+                        self.bg_color.0,
+                        self.bg_color.0,
+                        self.bg_color.0,
+                        255,
+                    ));
+                    self.framebuffer.clear();
+
+                    // draw the sim's particles
+                    for particle in &sim.particles {
+                        let x = particle.pos.x as f32;
+                        let y = particle.pos.y as f32;
+                        let radius = particle.radius as f32;
+                        let (r, g, b, a) = particle.color;
+                        self.style.set_color_rgba8(r, g, b, a);
+
+                        let path = {
+                            let mut pb = PathBuilder::new();
+                            pb.push_circle(x, y, radius);
+                            pb.finish().unwrap()
+                        };
+
+                        self.draw_buffer.fill_path(
+                            &path,
+                            &self.style,
+                            FillRule::Winding,
+                            Transform::identity(),
+                            None,
+                        );
+                    };
+
+                    // copy the contents from draw_buffer to framebuffer w/ required format
+                    for color in self.draw_buffer.pixels() {
+                        let rgb = (color.red(), color.green(), color.blue());
+                        self.framebuffer.push(MinimalRenderer::rgb_to_softbuffer(rgb));
+                    };
 
                     // write the contents of self.buffer to the window buffer
                     self.context
-                        .set_buffer(&self.buffer, self.width, self.height);
-                },
+                        .set_buffer(&self.framebuffer, self.width, self.height);
+
+                    let elapsed = (Instant::now().duration_since(self.time).as_micros() as f64) * (10.0_f64).powi(-6);
+                    sim.step_simulation(elapsed);
+                    self.context.window_mut().set_title(format!("Simulation: {:.0} fps", 1.0/elapsed).as_str());
+                    self.time = Instant::now();
+                }
                 _ => (),
             };
         });

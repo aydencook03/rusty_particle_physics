@@ -1,7 +1,7 @@
 use crate::vec2::Vec2;
 
 /// A physical particle. Is only aware of its own properties, state, and the forces acting on it (obeys locality)
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct Particle {
     /// mass of the particle
     pub mass: f64,
@@ -24,8 +24,8 @@ impl Particle {
     pub fn new() -> Particle {
         Particle {
             mass: 10.0,
-            radius: 10.0,
-            color: (220, 20, 60, 1), //CRIMSON,
+            radius: 15.0,
+            color: (220, 20, 60, 255), //CRIMSON,
             ..Default::default()
         }
     }

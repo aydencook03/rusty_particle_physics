@@ -1,7 +1,6 @@
 use crate::dynamics::constraint::Constraint;
 use crate::dynamics::force::Force;
 use crate::matter::particle::Particle;
-//use crate::rendering::IsRenderer;
 
 #[derive(Default)]
 pub struct Sim<'a> {
@@ -37,9 +36,9 @@ impl<'a> Sim<'a> {
         }
     }
 
-    fn handle_constraints(self: &Self) {
+    fn handle_constraints(self: &mut Self) {
         for _ in 0..self.constraint_passes {
-            for constraint in &self.constraints {
+            for constraint in &mut self.constraints {
                 constraint.handle();
             }
         }
