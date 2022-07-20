@@ -9,6 +9,8 @@ use winit::{
 
 use softbuffer::GraphicsContext;
 
+const DEFAULT_COLOR: (u8, u8, u8) = (70, 70, 70);
+
 pub struct MinimalRenderer {
     pub width: u16,
     pub height: u16,
@@ -20,7 +22,7 @@ pub struct MinimalRenderer {
 }
 
 impl MinimalRenderer {
-    pub fn new(width: u16, height: u16, color: (u8, u8, u8)) -> MinimalRenderer {
+    pub fn new(width: u16, height: u16) -> Self {
         // A "context" that provides a way to retrieve events from the system and the windows registered to it.
         // EventLoop::new() initializes everything that will be required to create windows.
         // For example on Linux creating an event loop opens a connection to the X or Wayland server.
@@ -40,7 +42,7 @@ impl MinimalRenderer {
 
         let buffer_len = (width as usize) * (height as usize);
 
-        let bg_color_u32 = MinimalRenderer::rgb_to_u32(color);
+        let bg_color_u32 = MinimalRenderer::rgb_to_u32(DEFAULT_COLOR);
 
         MinimalRenderer {
             width,
@@ -54,6 +56,7 @@ impl MinimalRenderer {
     }
 
     /// Converts from an rgb color to the 32-bit format that softbuffer uses.
+    /// 
     /// Pixel format (u32): 00000000RRRRRRRRGGGGGGGGBBBBBBBB
     pub fn rgb_to_u32(rgb: (u8, u8, u8)) -> u32 {
         let (r, g, b) = rgb;
@@ -62,6 +65,11 @@ impl MinimalRenderer {
         let b = (b as u32) << 0;
 
         r | g | b
+    }
+
+    pub fn with_color(mut self: Self, color: (u8, u8, u8)) -> Self {
+        self.bg_color_u32 = MinimalRenderer::rgb_to_u32(color);
+        self
     }
 
     pub fn run(mut self: Self, _sim: &mut Sim) {
@@ -75,21 +83,21 @@ impl MinimalRenderer {
                     event: WindowEvent::CloseRequested,
                     ..
                 } => {
-                    println!("The close button was pressed. Stopping...");
+                    // stop the event loop, therefore closing the window
                     *control_flow = ControlFlow::Exit
-                }
+                },
                 Event::MainEventsCleared => {
                     // update & render
 
-                    // clear the screen
+                    // clear the buffer to the background color
                     self.buffer = vec![self.bg_color_u32; self.buffer_len];
 
                     // write the contents of self.buffer to the window buffer
                     self.context
                         .set_buffer(&self.buffer, self.width, self.height);
-                }
+                },
                 _ => (),
-            }
+            };
         });
     }
 }

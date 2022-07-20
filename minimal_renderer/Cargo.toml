@@ -10,7 +10,7 @@ edition = "2021"
 rusty_particle_physics_2d = { path = "../engine_2d/" }
 # used to open a window and event loop
 winit = "0.26.1"
-# used to create a pixel framebuffer of the window
+# used to access the framebuffer of the window
 softbuffer = "0.1.1"
-# used to turn paths and shapes into pixels
-tiny-skia = "0.7.0"
+# used to draw paths and shapes on the framebuffer
+embedded-graphics = "0.7.1"
