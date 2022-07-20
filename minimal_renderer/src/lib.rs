@@ -57,7 +57,7 @@ impl MinimalRenderer {
         black_style.anti_alias = true;
 
         let mut stroke_style = Stroke::default();
-        stroke_style.width = 2.0;
+        stroke_style.width = 2.5;
 
         MinimalRenderer {
             width,
