@@ -11,7 +11,7 @@ use std::time::Instant;
 
 use softbuffer::GraphicsContext;
 
-use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Transform};
+use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Stroke, Transform};
 
 const DEFAULT_COLOR: (u8, u8, u8) = (70, 70, 70);
 
@@ -25,6 +25,8 @@ pub struct MinimalRenderer {
     framebuffer: Vec<u32>,
     draw_buffer: Pixmap,
     style: Paint<'static>,
+    black_style: Paint<'static>,
+    stroke_style: Stroke,
 }
 
 impl MinimalRenderer {
@@ -50,6 +52,13 @@ impl MinimalRenderer {
         let mut style = Paint::default();
         style.anti_alias = true;
 
+        let mut black_style = Paint::default();
+        black_style.set_color_rgba8(0, 0, 0, 255);
+        black_style.anti_alias = true;
+
+        let mut stroke_style = Stroke::default();
+        stroke_style.width = 2.0;
+
         MinimalRenderer {
             width,
             height,
@@ -60,6 +69,8 @@ impl MinimalRenderer {
             framebuffer: vec![0; (width as usize) * (height as usize)],
             draw_buffer: Pixmap::new(width as u32, height as u32).unwrap(),
             style,
+            black_style,
+            stroke_style,
         }
     }
 
@@ -108,8 +119,8 @@ impl MinimalRenderer {
                     // clear the buffers
                     self.draw_buffer.fill(Color::from_rgba8(
                         self.bg_color.0,
-                        self.bg_color.0,
-                        self.bg_color.0,
+                        self.bg_color.1,
+                        self.bg_color.2,
                         255,
                     ));
                     self.framebuffer.clear();
@@ -128,6 +139,13 @@ impl MinimalRenderer {
                             pb.finish().unwrap()
                         };
 
+                        self.draw_buffer.stroke_path(
+                            &path,
+                            &self.black_style,
+                            &self.stroke_style,
+                            Transform::identity(),
+                            None,
+                        );
                         self.draw_buffer.fill_path(
                             &path,
                             &self.style,
@@ -135,21 +153,25 @@ impl MinimalRenderer {
                             Transform::identity(),
                             None,
                         );
-                    };
+                    }
 
                     // copy the contents from draw_buffer to framebuffer w/ required format
                     for color in self.draw_buffer.pixels() {
                         let rgb = (color.red(), color.green(), color.blue());
-                        self.framebuffer.push(MinimalRenderer::rgb_to_softbuffer(rgb));
-                    };
+                        self.framebuffer
+                            .push(MinimalRenderer::rgb_to_softbuffer(rgb));
+                    }
 
                     // write the contents of self.buffer to the window buffer
                     self.context
                         .set_buffer(&self.framebuffer, self.width, self.height);
 
-                    let elapsed = (Instant::now().duration_since(self.time).as_micros() as f64) * (10.0_f64).powi(-6);
+                    let elapsed = (Instant::now().duration_since(self.time).as_micros() as f64)
+                        * (10.0_f64).powi(-6);
                     sim.step_simulation(elapsed);
-                    self.context.window_mut().set_title(format!("Simulation: {:.0} fps", 1.0/elapsed).as_str());
+                    self.context
+                        .window_mut()
+                        .set_title(format!("Simulation: {:.0} fps", 1.0 / elapsed).as_str());
                     self.time = Instant::now();
                 }
                 _ => (),
