@@ -127,10 +127,10 @@ impl MinimalRenderer {
                         }),
                     ..
                 } => match code {
-                    VirtualKeyCode::Left => self.view_offset.x -= PAN_STEP / self.zoom,
-                    VirtualKeyCode::Right => self.view_offset.x += PAN_STEP / self.zoom,
-                    VirtualKeyCode::Up => self.view_offset.y += PAN_STEP / self.zoom,
-                    VirtualKeyCode::Down => self.view_offset.y -= PAN_STEP / self.zoom,
+                    VirtualKeyCode::Left => self.view_offset.x -= PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0),
+                    VirtualKeyCode::Right => self.view_offset.x += PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0),
+                    VirtualKeyCode::Up => self.view_offset.y += PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0),
+                    VirtualKeyCode::Down => self.view_offset.y -= PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0),
                     VirtualKeyCode::Equals => self.zoom += ZOOM_STEP,
                     VirtualKeyCode::Minus => self.zoom -= ZOOM_STEP,
                     VirtualKeyCode::Space => sim.running = !sim.running,
@@ -160,6 +160,8 @@ impl MinimalRenderer {
 
                     // draw the sim's particles
                     for particle in &sim.particles {
+                        // transform from simulation space to window space,
+                        // as the window is panned and zoomed.
                         let zoom = std::f64::consts::E.powf(self.zoom - 1.0);
                         let scale = ((zoom, 0.0), (0.0, zoom));
                         let identity = ((1.0, 0.0), (0.0, 1.0));
