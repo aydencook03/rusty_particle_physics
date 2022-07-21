@@ -140,6 +140,8 @@ impl MinimalRenderer {
                 Event::MainEventsCleared => {
                     // update & render after other events are handled
 
+                    let zoom = std::f64::consts::E.powf(self.zoom - 1.0);
+
                     // create the buffers
                     let mut draw_buffer = Pixmap::new(width as u32, height as u32).unwrap();
                     let mut framebuffer: Vec<u32> = Vec::new();
@@ -148,7 +150,7 @@ impl MinimalRenderer {
                     let mut style = Paint::default();
                     style.anti_alias = true;
                     let mut stroke = Stroke::default();
-                    stroke.width = STROKE * (std::f64::consts::E.powf(self.zoom - 1.0) as f32);
+                    stroke.width = STROKE * (zoom as f32);
 
                     // paint the background
                     draw_buffer.fill(Color::from_rgba8(
@@ -162,7 +164,6 @@ impl MinimalRenderer {
                     for particle in &sim.particles {
                         // transform from simulation space to window space,
                         // as the window is panned and zoomed.
-                        let zoom = std::f64::consts::E.powf(self.zoom - 1.0);
                         let scale = ((zoom, 0.0), (0.0, zoom));
                         let identity = ((1.0, 0.0), (0.0, 1.0));
                         let pan = self.view_offset * -1.0;
