@@ -1,4 +1,4 @@
-//! This is a "Minimal-Viable-Product" renderer for the rusty_particle_physics crate.
+//! This is a "Minimal Viable Product" renderer for the rusty_particle_physics crate.
 //! It is very bare bones, and is mainly used to test the actual physics engine.
 //!
 //! It uses winit for the event_loop and window, std::time for timekeeping, softbuffer
@@ -6,7 +6,7 @@
 //! algorithms.
 //!
 //! Key Control:
-//! - arrow keys -> move around
+//! - arrow keys -> pan around
 //! - plus(equals)/minus -> zoom in/out
 //! - space -> pause
 //! - q -> quit
@@ -15,8 +15,8 @@ use rusty_particle_physics_2d::sim::Sim;
 use rusty_particle_physics_2d::vec2::Vec2;
 
 use winit::{
-    dpi::LogicalSize,
-    event::{Event, WindowEvent, DeviceEvent, KeyboardInput, VirtualKeyCode, ElementState},
+    dpi::PhysicalSize, //LogicalSize,
+    event::{DeviceEvent, ElementState, Event, KeyboardInput, VirtualKeyCode, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
     window::{Window, WindowBuilder},
 };
@@ -29,11 +29,13 @@ use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Stroke, Transform};
 
 const DEFAULT_COLOR: (u8, u8, u8) = (70, 70, 70);
 const STROKE: f32 = 2.5;
-const MOVE_SIZE: f64 = 10.0;
+const PAN_STEP: f64 = 20.0;
+const ZOOM_STEP: f64 = 0.15;
 
 pub struct MinimalRenderer {
     bg_color: (u8, u8, u8),
     view_offset: Vec2,
+    zoom: f64,
     event_loop: EventLoop<()>,
     time: Instant,
     context: GraphicsContext<Window>,
@@ -48,7 +50,7 @@ impl MinimalRenderer {
         let event_loop = EventLoop::new();
 
         let window = {
-            let size = LogicalSize::new(width, height);
+            let size = PhysicalSize::new(width, height);
             WindowBuilder::new()
                 .with_inner_size(size)
                 .with_title("Simulation")
@@ -59,6 +61,7 @@ impl MinimalRenderer {
         MinimalRenderer {
             bg_color: DEFAULT_COLOR,
             view_offset: Vec2::new(0.0, 0.0),
+            zoom: 1.0,
             event_loop,
             time: Instant::now(),
             context: unsafe { GraphicsContext::new(window) }.unwrap(),
@@ -116,19 +119,24 @@ impl MinimalRenderer {
                     *control_flow = ControlFlow::Exit
                 }
                 Event::DeviceEvent {
-                    event: DeviceEvent::Key(KeyboardInput{state: ElementState::Pressed, virtual_keycode: Some(code), ..}),
+                    event:
+                        DeviceEvent::Key(KeyboardInput {
+                            state: ElementState::Pressed,
+                            virtual_keycode: Some(code),
+                            ..
+                        }),
                     ..
-                } => {
-                    match code {
-                        VirtualKeyCode::Left => self.view_offset.x -= MOVE_SIZE,
-                        VirtualKeyCode::Right => self.view_offset.x += MOVE_SIZE,
-                        VirtualKeyCode::Up => self.view_offset.y -= MOVE_SIZE,
-                        VirtualKeyCode::Down => self.view_offset.y += MOVE_SIZE,
-                        VirtualKeyCode::Space => sim.running = !sim.running,
-                        VirtualKeyCode::Q => *control_flow = ControlFlow::Exit,
-                        _ => (),
-                    }
-                }
+                } => match code {
+                    VirtualKeyCode::Left => self.view_offset.x -= PAN_STEP,
+                    VirtualKeyCode::Right => self.view_offset.x += PAN_STEP,
+                    VirtualKeyCode::Up => self.view_offset.y -= PAN_STEP,
+                    VirtualKeyCode::Down => self.view_offset.y += PAN_STEP,
+                    VirtualKeyCode::Equals => self.zoom += ZOOM_STEP,
+                    VirtualKeyCode::Minus => self.zoom -= ZOOM_STEP,
+                    VirtualKeyCode::Space => sim.running = !sim.running,
+                    VirtualKeyCode::Q => *control_flow = ControlFlow::Exit,
+                    _ => (),
+                },
                 Event::MainEventsCleared => {
                     // update & render after other events are handled
 
