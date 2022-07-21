@@ -1,3 +1,7 @@
+//! Provides a 2-dimensional vector object, along with a lot of useful functions relating to them.
+//!
+//! Such as polar coordinates, dot products, cross products, affine transformations, etc.
+
 /// A 2d euclidean vector
 #[derive(Copy, Clone, Default)]
 pub struct Vec2 {
@@ -19,14 +23,39 @@ impl Vec2 {
         }
     }
 
-    /// Dot product with another Vec2
-    pub fn dot(self: &Self, other: &Vec2) -> f64 {
-        self.x * other.x + self.y * other.y
+    /// Returns a zero Vec2
+    pub fn zero() -> Vec2 {
+        Vec2 { x: 0.0, y: 0.0 }
     }
 
     /// Returns the magnitude of the Vec2
     pub fn mag(self: &Self) -> f64 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+
+    /// Dot product with another Vec2
+    pub fn dot(self: &Self, other: &Vec2) -> f64 {
+        self.x * other.x + self.y * other.y
+    }
+
+    /// Cross product with another Vec2 (returns z component)
+    pub fn cross(self: &Self, other: &Vec2) -> f64 {
+        self.x * other.y - self.y * other.x
+    }
+
+    /// Perform an affine transformation on the Vec2.
+    ///
+    /// y = Ax + b
+    ///
+    /// A = ( (f64, f64),
+    ///       (f64, f64) )
+    ///
+    /// b = Vec2
+    pub fn affine_transformation(self: &Self, a: ((f64, f64), (f64, f64)), b: Vec2) -> Vec2 {
+        Vec2 {
+            x: self.x * (a.0).0 + self.y * (a.0).1 + b.x,
+            y: self.x * (a.1).0 + self.y * (a.1).1 + b.y,
+        }
     }
 }
 

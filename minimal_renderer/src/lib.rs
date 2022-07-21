@@ -27,13 +27,13 @@ use softbuffer::GraphicsContext;
 
 use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Stroke, Transform};
 
-const DEFAULT_COLOR: (u8, u8, u8) = (70, 70, 70);
+const DEFAULT_COLOR: (u8, u8, u8, u8) = (70, 70, 70, 255);
 const STROKE: f32 = 2.5;
 const PAN_STEP: f64 = 20.0;
 const ZOOM_STEP: f64 = 0.15;
 
 pub struct MinimalRenderer {
-    bg_color: (u8, u8, u8),
+    bg_color: (u8, u8, u8, u8),
     view_offset: Vec2,
     zoom: f64,
     event_loop: EventLoop<()>,
@@ -81,7 +81,7 @@ impl MinimalRenderer {
     }
 
     /// a builder method to give the window color upon creation (after calling new)
-    pub fn with_color(mut self: Self, color: (u8, u8, u8)) -> Self {
+    pub fn with_color(mut self: Self, color: (u8, u8, u8, u8)) -> Self {
         self.bg_color = color;
         self
     }
@@ -127,10 +127,10 @@ impl MinimalRenderer {
                         }),
                     ..
                 } => match code {
-                    VirtualKeyCode::Left => self.view_offset.x -= PAN_STEP,
-                    VirtualKeyCode::Right => self.view_offset.x += PAN_STEP,
-                    VirtualKeyCode::Up => self.view_offset.y -= PAN_STEP,
-                    VirtualKeyCode::Down => self.view_offset.y += PAN_STEP,
+                    VirtualKeyCode::Left => self.view_offset.x -= PAN_STEP / self.zoom,
+                    VirtualKeyCode::Right => self.view_offset.x += PAN_STEP / self.zoom,
+                    VirtualKeyCode::Up => self.view_offset.y += PAN_STEP / self.zoom,
+                    VirtualKeyCode::Down => self.view_offset.y -= PAN_STEP / self.zoom,
                     VirtualKeyCode::Equals => self.zoom += ZOOM_STEP,
                     VirtualKeyCode::Minus => self.zoom -= ZOOM_STEP,
                     VirtualKeyCode::Space => sim.running = !sim.running,
@@ -155,19 +155,29 @@ impl MinimalRenderer {
                         self.bg_color.0,
                         self.bg_color.1,
                         self.bg_color.2,
-                        255,
+                        self.bg_color.3,
                     ));
 
                     // draw the sim's particles
                     for particle in &sim.particles {
-                        let x = (particle.pos.x - self.view_offset.x) as f32;
-                        let y = (particle.pos.y - self.view_offset.y) as f32;
-                        let radius = particle.radius as f32;
+                        let zoom = std::f64::consts::E.powf(self.zoom - 1.0);
+                        let scale = ((zoom, 0.0), (0.0, zoom));
+                        let identity = ((1.0, 0.0), (0.0, 1.0));
+                        let pan = self.view_offset * -1.0;
+                        let Vec2 { x, y } = particle
+                            .pos
+                            .affine_transformation(identity, pan)
+                            .affine_transformation(scale, Vec2::zero());
+                        let radius = particle.radius * zoom;
                         let (r, g, b, a) = particle.color;
 
                         let path = {
                             let mut pb = PathBuilder::new();
-                            pb.push_circle(x, y, radius);
+                            pb.push_circle(
+                                (x + width / 2.0) as f32,
+                                (height / 2.0 - y) as f32,
+                                radius as f32,
+                            );
                             pb.finish().unwrap()
                         };
 
