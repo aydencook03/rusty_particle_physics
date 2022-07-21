@@ -148,7 +148,7 @@ impl MinimalRenderer {
                     let mut style = Paint::default();
                     style.anti_alias = true;
                     let mut stroke = Stroke::default();
-                    stroke.width = STROKE;
+                    stroke.width = STROKE * (std::f64::consts::E.powf(self.zoom - 1.0) as f32);
 
                     // paint the background
                     draw_buffer.fill(Color::from_rgba8(
