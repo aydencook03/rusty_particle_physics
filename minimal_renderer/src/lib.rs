@@ -4,8 +4,8 @@
 //! It uses [winit](https://github.com/rust-windowing/winit) for the event_loop, window, and keyboard,
 //! [std::time](https://doc.rust-lang.org/std/time/index.html) for timekeeping,
 //! [softbuffer](https://github.com/john01dav/softbuffer) for accessing the window's framebuffer,
-//! and [tiny_skia](https://github.com/RazrFalcon/tiny-skia) for the path -> pixels (rasterization)
-//! algorithms.
+//! and [tiny_skia](https://github.com/RazrFalcon/tiny-skia) for turning shapes into 
+//! pixels (the rasterization algorithms).
 //!
 //! Key Controls:
 //!
@@ -269,5 +269,10 @@ impl MinimalRenderer {
                 _ => (),
             };
         });
+    }
+
+    /// Render/Bake an animation instead of running real-time in a window.
+    pub fn create_animation(self: &Self, _sim: Sim, _fps: u8, _length: f64) {
+        todo!();
     }
 }
