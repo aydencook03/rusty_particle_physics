@@ -1,8 +1,8 @@
-use minimal_renderer::MinimalRenderer;
+use renderer_2d::Renderer;
 use rusty_particle_physics_2d::prelude::*;
 
 fn main() {
-    let window = MinimalRenderer::new(600, 600);
+    let window = Renderer::new(600, 600);
     let mut sim = Sim::new();
 
     sim.particles.push({

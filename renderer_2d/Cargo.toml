@@ -1,5 +1,5 @@
 [package]
-name = "minimal_renderer"
+name = "renderer_2d"
 version = "0.1.0"
 edition = "2021"
 

@@ -4,5 +4,5 @@ resolver = "2"
 
 members = [
   "engine_2d",
-  "minimal_renderer"
+  "renderer_2d"
 ]

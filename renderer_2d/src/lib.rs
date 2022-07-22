@@ -1,11 +1,12 @@
-//! This is a "Minimal Viable Product" renderer for the `rusty_particle_physics` crate.
-//! It is very bare bones, and is mainly used to test the actual physics engine.
+//! This is a "Minimal Viable Product" renderer for the `rusty_particle_physics_2d` crate.
+//! It is very bare bones, and is mainly used to test the physics engine.
 //!
 //! It uses [winit](https://github.com/rust-windowing/winit) for the event_loop, window, and keyboard,
 //! [std::time](https://doc.rust-lang.org/std/time/index.html) for timekeeping,
 //! [softbuffer](https://github.com/john01dav/softbuffer) for accessing the window's framebuffer,
-//! and [tiny_skia](https://github.com/RazrFalcon/tiny-skia) for turning shapes into 
+//! and [tiny_skia](https://github.com/RazrFalcon/tiny-skia) for turning shapes into
 //! pixels (the rasterization algorithms).
+//!
 //!
 //! Key Controls:
 //!
@@ -18,9 +19,14 @@
 //! | R       | Reset Sim  |
 //! | Q       | Quit       |
 //!
+//!
 //! Example usage:
+//!
 //! ```rust
-//! let window = MinimalRenderer::new(600, 600);
+//! use rusty_particle_physics_2d::prelude::*;
+//! use renderer_2d::Renderer;
+//!
+//! let window = Renderer::new(600, 600);
 //! let mut sim = Sim::new();
 //!
 //! // Set up the simulation... //
@@ -49,7 +55,7 @@ const STROKE: f32 = 2.5;
 const PAN_STEP: f64 = 20.0;
 const ZOOM_STEP: f64 = 0.15;
 
-pub struct MinimalRenderer {
+pub struct Renderer {
     bg_color: (u8, u8, u8, u8),
     view_offset: Vec2,
     zoom: f64,
@@ -58,9 +64,9 @@ pub struct MinimalRenderer {
     context: GraphicsContext<Window>,
 }
 
-impl MinimalRenderer {
+impl Renderer {
     /// Initialize the renderer with width & height.
-    pub fn new(width: u16, height: u16) -> Self {
+    pub fn new(width: u32, height: u32) -> Self {
         // A "context" that provides a way to retrieve events from the system and the windows registered to it.
         // EventLoop::new() initializes everything that will be required to create windows.
         // On Linux, creating an event loop opens a connection to the X or Wayland server.
@@ -75,7 +81,7 @@ impl MinimalRenderer {
                 .unwrap()
         };
 
-        MinimalRenderer {
+        Renderer {
             bg_color: DEFAULT_COLOR,
             view_offset: Vec2::new(0.0, 0.0),
             zoom: 1.0,
@@ -88,7 +94,7 @@ impl MinimalRenderer {
     /// A builder method to give the window a non-default color upon creation (after calling new). Ex:
     ///
     /// ```rust
-    /// let window = MinimalRenderer::new(WIDTH, HEIGHT).with_color(((R, G, B, A)));
+    /// let window = Renderer::new(WIDTH, HEIGHT).with_color(((R, G, B, A)));
     /// ```
     pub fn with_color(mut self: Self, color: (u8, u8, u8, u8)) -> Self {
         self.bg_color = color;
@@ -98,7 +104,7 @@ impl MinimalRenderer {
     /// Converts from an rgb color to the 32-bit binary format that softbuffer uses.
     ///
     /// Pixel format (u32): 00000000RRRRRRRRGGGGGGGGBBBBBBBB
-    pub fn rgb_to_softbuffer(rgb: (u8, u8, u8)) -> u32 {
+    fn rgb_to_softbuffer(rgb: (u8, u8, u8)) -> u32 {
         let (r, g, b) = rgb;
         let r = (r as u32) << 16;
         let g = (g as u32) << 8;
@@ -113,13 +119,13 @@ impl MinimalRenderer {
     /// a partial move error. self.event_loop.run consumes self's event loop.
     /// so trying to access self in a method wouldn't work, as a part of self is owned
     /// by the running event loop.
-    fn dyn_width(context: &GraphicsContext<Window>) -> f64 {
-        context.window().inner_size().width as f64
+    fn dyn_width(context: &GraphicsContext<Window>) -> u32 {
+        context.window().inner_size().width
     }
 
     /// A method to dynamically get the window's width. see dyn_width.
-    fn dyn_height(context: &GraphicsContext<Window>) -> f64 {
-        context.window().inner_size().height as f64
+    fn dyn_height(context: &GraphicsContext<Window>) -> u32 {
+        context.window().inner_size().height
     }
 
     /// Run the given simulation in a new window.
@@ -128,9 +134,6 @@ impl MinimalRenderer {
             // ControlFlow::Poll continuously runs the event loop, even if the OS hasn't
             // dispatched any events. This is ideal for games and similar applications.
             *control_flow = ControlFlow::Poll;
-
-            let width = Self::dyn_width(&self.context);
-            let height = Self::dyn_height(&self.context);
 
             match event {
                 Event::WindowEvent {
@@ -174,9 +177,16 @@ impl MinimalRenderer {
                 Event::MainEventsCleared => {
                     // update & render after other events are handled
 
+                    // get window width, height, and zoom
+                    let width = Self::dyn_width(&self.context) as f64;
+                    let height = Self::dyn_height(&self.context) as f64;
                     let zoom = std::f64::consts::E.powf(self.zoom - 1.0);
+                    // create affine transformation data
+                    let identity = ((1.0, 0.0), (0.0, 1.0));
+                    let scale = ((zoom, 0.0), (0.0, zoom));
+                    let pan = self.view_offset * -1.0;
 
-                    // create the buffers
+                    // create buffers
                     let mut draw_buffer = Pixmap::new(width as u32, height as u32).unwrap();
                     let mut framebuffer: Vec<u32> = Vec::new();
 
@@ -196,11 +206,7 @@ impl MinimalRenderer {
 
                     // draw the sim's particles
                     for particle in &sim.particles {
-                        // transform from simulation space to window space,
-                        // as the window is panned and zoomed.
-                        let scale = ((zoom, 0.0), (0.0, zoom));
-                        let identity = ((1.0, 0.0), (0.0, 1.0));
-                        let pan = self.view_offset * -1.0;
+                        // get particle properties mapped to window space
                         let Vec2 { x, y } = particle
                             .pos
                             .affine_transformation(identity, pan)
@@ -218,7 +224,7 @@ impl MinimalRenderer {
                             pb.finish().unwrap()
                         };
 
-                        // draw the particle's outline
+                        // draw the particle outlines
                         style.set_color_rgba8(0, 0, 0, 255);
                         draw_buffer.stroke_path(
                             &path,
@@ -227,7 +233,7 @@ impl MinimalRenderer {
                             Transform::identity(),
                             None,
                         );
-                        // fill in the particle's outline
+                        // fill in the particle outlines
                         style.set_color_rgba8(r, g, b, a);
                         draw_buffer.fill_path(
                             &path,
@@ -241,7 +247,7 @@ impl MinimalRenderer {
                     // copy the contents from draw_buffer to framebuffer w/ required format
                     for color in draw_buffer.pixels() {
                         let rgb = (color.red(), color.green(), color.blue());
-                        framebuffer.push(MinimalRenderer::rgb_to_softbuffer(rgb));
+                        framebuffer.push(Renderer::rgb_to_softbuffer(rgb));
                     }
 
                     // write the contents of draw_buffer to the window buffer
