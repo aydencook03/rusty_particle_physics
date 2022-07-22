@@ -233,6 +233,7 @@ impl Renderer {
                             Transform::identity(),
                             None,
                         );
+                        
                         // fill in the particle outlines
                         style.set_color_rgba8(r, g, b, a);
                         draw_buffer.fill_path(
@@ -245,8 +246,8 @@ impl Renderer {
                     }
 
                     // copy the contents from draw_buffer to framebuffer w/ required format
-                    for color in draw_buffer.pixels() {
-                        let rgb = (color.red(), color.green(), color.blue());
+                    for pixel in draw_buffer.pixels() {
+                        let rgb = (pixel.red(), pixel.green(), pixel.blue());
                         framebuffer.push(Renderer::rgb_to_softbuffer(rgb));
                     }
 
