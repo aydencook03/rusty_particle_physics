@@ -1,5 +1,5 @@
 //! This is a "Minimal Viable Product" renderer for the `rusty_particle_physics_2d` crate.
-//! It is very bare bones, and is mainly used to test the physics engine.
+//! It is pretty simple, and is mainly used to test the 2d physics engine.
 //!
 //! It uses [winit](https://github.com/rust-windowing/winit) for the event_loop, window, and keyboard,
 //! [std::time](https://doc.rust-lang.org/std/time/index.html) for timekeeping,
@@ -233,7 +233,7 @@ impl Renderer {
                             Transform::identity(),
                             None,
                         );
-                        
+
                         // fill in the particle outlines
                         style.set_color_rgba8(r, g, b, a);
                         draw_buffer.fill_path(
@@ -251,7 +251,7 @@ impl Renderer {
                         framebuffer.push(Renderer::rgb_to_softbuffer(rgb));
                     }
 
-                    // write the contents of draw_buffer to the window buffer
+                    // write the contents of framebuffer to the window buffer
                     self.context
                         .set_buffer(&framebuffer, width as u16, height as u16);
 

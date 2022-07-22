@@ -9,8 +9,8 @@ edition = "2021"
 # the physics engine
 rusty_particle_physics_2d = { path = "../engine_2d/" }
 # used to open a window and event loop
-winit = "0.26.1"
+winit = "0.26"
 # used to access the framebuffer of the window
-softbuffer = "0.1.1"
+softbuffer = "0.1"
 # used to draw paths and shapes on the framebuffer
-tiny-skia = "0.7.0"
+tiny-skia = "0.7"
