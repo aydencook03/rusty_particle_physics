@@ -1,15 +1,32 @@
-//! This is a "Minimal Viable Product" renderer for the rusty_particle_physics crate.
+//! This is a "Minimal Viable Product" renderer for the `rusty_particle_physics` crate.
 //! It is very bare bones, and is mainly used to test the actual physics engine.
 //!
-//! It uses winit for the event_loop and window, std::time for timekeeping, softbuffer
-//! for accessing the window's framebuffer, and tiny_skia for the path->pixels (rasterization)
+//! It uses [winit](https://github.com/rust-windowing/winit) for the event_loop, window, and keyboard,
+//! [std::time](https://doc.rust-lang.org/std/time/index.html) for timekeeping,
+//! [softbuffer](https://github.com/john01dav/softbuffer) for accessing the window's framebuffer,
+//! and [tiny_skia](https://github.com/RazrFalcon/tiny-skia) for the path -> pixels (rasterization)
 //! algorithms.
 //!
-//! Key Control:
-//! - arrow keys -> pan around
-//! - plus(equals)/minus -> zoom in/out
-//! - space -> pause
-//! - q -> quit
+//! Key Controls:
+//!
+//! | Key     | Action     |
+//! |---------|------------|
+//! | Arrows  | Pan Around |
+//! | +/-     | Zoom In/Out|
+//! | Enter   | Reset View |
+//! | Space   | Pause/Play |
+//! | R       | Reset Sim  |
+//! | Q       | Quit       |
+//!
+//! Example usage:
+//! ```rust
+//! let window = MinimalRenderer::new(600, 600);
+//! let mut sim = Sim::new();
+//!
+//! // Set up the simulation... //
+//!
+//! window.run(sim);
+//! ```
 
 use rusty_particle_physics_2d::sim::Sim;
 use rusty_particle_physics_2d::vec2::Vec2;
@@ -27,7 +44,7 @@ use softbuffer::GraphicsContext;
 
 use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Stroke, Transform};
 
-const DEFAULT_COLOR: (u8, u8, u8, u8) = (70, 70, 70, 255);
+const DEFAULT_COLOR: (u8, u8, u8, u8) = (40, 40, 40, 255);
 const STROKE: f32 = 2.5;
 const PAN_STEP: f64 = 20.0;
 const ZOOM_STEP: f64 = 0.15;
@@ -42,11 +59,11 @@ pub struct MinimalRenderer {
 }
 
 impl MinimalRenderer {
-    /// initialize the renderer with width & height
+    /// Initialize the renderer with width & height.
     pub fn new(width: u16, height: u16) -> Self {
         // A "context" that provides a way to retrieve events from the system and the windows registered to it.
         // EventLoop::new() initializes everything that will be required to create windows.
-        // For example on Linux creating an event loop opens a connection to the X or Wayland server.
+        // On Linux, creating an event loop opens a connection to the X or Wayland server.
         let event_loop = EventLoop::new();
 
         let window = {
@@ -68,7 +85,17 @@ impl MinimalRenderer {
         }
     }
 
-    /// Converts from an rgb color to the 32-bit format that softbuffer uses.
+    /// A builder method to give the window a non-default color upon creation (after calling new). Ex:
+    ///
+    /// ```rust
+    /// let window = MinimalRenderer::new(WIDTH, HEIGHT).with_color(((R, G, B, A)));
+    /// ```
+    pub fn with_color(mut self: Self, color: (u8, u8, u8, u8)) -> Self {
+        self.bg_color = color;
+        self
+    }
+
+    /// Converts from an rgb color to the 32-bit binary format that softbuffer uses.
     ///
     /// Pixel format (u32): 00000000RRRRRRRRGGGGGGGGBBBBBBBB
     pub fn rgb_to_softbuffer(rgb: (u8, u8, u8)) -> u32 {
@@ -80,15 +107,9 @@ impl MinimalRenderer {
         r | g | b
     }
 
-    /// a builder method to give the window color upon creation (after calling new)
-    pub fn with_color(mut self: Self, color: (u8, u8, u8, u8)) -> Self {
-        self.bg_color = color;
-        self
-    }
-
-    /// a method to dynamically get the window's width.
+    /// A method to dynamically get the window's width.
     ///
-    /// this isn't a method and a context needs to be passed in order to avoid
+    /// This isn't a method and a context needs to be passed in order to avoid
     /// a partial move error. self.event_loop.run consumes self's event loop.
     /// so trying to access self in a method wouldn't work, as a part of self is owned
     /// by the running event loop.
@@ -96,11 +117,12 @@ impl MinimalRenderer {
         context.window().inner_size().width as f64
     }
 
-    /// a method to dynamically get the window's width. see dyn_width.
+    /// A method to dynamically get the window's width. see dyn_width.
     fn dyn_height(context: &GraphicsContext<Window>) -> f64 {
         context.window().inner_size().height as f64
     }
 
+    /// Run the given simulation in a new window.
     pub fn run(mut self: Self, mut sim: Sim<'static>) {
         self.event_loop.run(move |event, _, control_flow| {
             // ControlFlow::Poll continuously runs the event loop, even if the OS hasn't
@@ -127,12 +149,24 @@ impl MinimalRenderer {
                         }),
                     ..
                 } => match code {
-                    VirtualKeyCode::Left => self.view_offset.x -= PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0),
-                    VirtualKeyCode::Right => self.view_offset.x += PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0),
-                    VirtualKeyCode::Up => self.view_offset.y += PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0),
-                    VirtualKeyCode::Down => self.view_offset.y -= PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0),
+                    VirtualKeyCode::Left => {
+                        self.view_offset.x -= PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0);
+                    }
+                    VirtualKeyCode::Right => {
+                        self.view_offset.x += PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0);
+                    }
+                    VirtualKeyCode::Up => {
+                        self.view_offset.y += PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0);
+                    }
+                    VirtualKeyCode::Down => {
+                        self.view_offset.y -= PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0);
+                    }
                     VirtualKeyCode::Equals => self.zoom += ZOOM_STEP,
                     VirtualKeyCode::Minus => self.zoom -= ZOOM_STEP,
+                    VirtualKeyCode::Return => {
+                        self.zoom = 1.0;
+                        self.view_offset = Vec2::zero();
+                    }
                     VirtualKeyCode::Space => sim.running = !sim.running,
                     VirtualKeyCode::Q => *control_flow = ControlFlow::Exit,
                     _ => (),
