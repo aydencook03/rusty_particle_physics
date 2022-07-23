@@ -1,32 +1,32 @@
 //! Provides the Particle type and some colors.
-//! 
-//! A particle is the most fundamental object in the physics engine, and can be used on its own if needed, as it 
+//!
+//! A particle is the most fundamental object in the physics engine, and can be used on its own if needed, as it
 //! handles its own interactions with the outside world through forces.
 //!  
 //! It contains a set of physical properties such as mass, radius, color, etc.
-//! 
-//! It also contains the state of the particle, namely its Position and Velocity. 
-//! As the scope of this engine is classical, non-relativistic, and non-field theoretic, the particle's state 
+//!
+//! It also contains the state of the particle, namely its Position and Velocity.
+//! As the scope of this engine is classical, non-relativistic, and non-field theoretic, the particle's state
 //! evolves according to the following simple rules:
-//! 
+//!
 //! External Forces update velocity.
 //! Velocity updates position.
-//! 
+//!
 //! Therefore, the Particle::update method is explicit in velocity, and uses the Symplectic-Euler method.
-//! 
+//!
 //! Example usage (without using Sim):
-//! 
+//!
 //! ```rust
 //! let mut particle = Particle::new()
 //!     .radius(10.0)
 //!     .pos(0.0, 0.0)
 //!     .vel(50.0, 70.0)
 //!     .color(EARTH_BLUE);
-//! 
+//!
 //! particle.forces.push(Vec2::new(0.0, -400.0));
 //! particle.update(0.01);
 //! println!("{}", particle.pos.x);
-//! 
+//!
 //! let mut particle2 = Particle::new();
 //! particle2.vel = Vec2::new(7.0, 0.0);
 //! ```
@@ -106,14 +106,14 @@ impl Particle {
         self
     }
 
-    /// An explicit, first-order symplectic integrator that updates the 
+    /// An explicit, first-order symplectic integrator that updates the
     /// Particle (uses Semi-implicit/Symplectic Euler).
     ///
     /// A classical particle behaves according to:
     /// $$\frac{d}{dt}\begin{bmatrix}\vec{x} \\\ \vec{v}\end{bmatrix}=
     /// \begin{bmatrix}\vec{v} \\\ \frac{1}{m}\Sigma\vec{F}\end{bmatrix}$$
     ///
-    /// This numerical integration scheme is a first-order symplectic integrator that solves this 
+    /// This numerical integration scheme is a first-order symplectic integrator that solves this
     /// differential equation using the following steps:
     /// $$\vec{v} _{n+1} = \vec{v} _{n} + \frac{1}{m}\Sigma\vec{F} _{n}\Delta t$$
     /// $$\vec{x} _{n+1} = \vec{x} _{n} + \vec{v} _{n+1}\Delta t$$

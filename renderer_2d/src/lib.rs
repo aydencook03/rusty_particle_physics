@@ -10,14 +10,14 @@
 //!
 //! Key Controls:
 //!
-//! | Key     | Action     |
-//! |---------|------------|
-//! | Arrows  | Pan Around |
-//! | +/-     | Zoom In/Out|
-//! | Enter   | Reset View |
-//! | Space   | Pause/Play |
-//! | R       | Reset Sim  |
-//! | Q       | Quit       |
+//! |  Key   |   Action    |
+//! |--------|-------------|
+//! | Arrows | Pan Around  |
+//! | +/-    | Zoom In/Out |
+//! | Enter  | Reset View  |
+//! | Space  | Pause/Play  |
+//! | R      | Reset Sim   |
+//! | Q      | Quit        |
 //!
 //!
 //! Example usage:

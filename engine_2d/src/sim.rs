@@ -1,22 +1,22 @@
 //! Provides the `Sim`, which is the thing that controls everything.
-//! 
-//! Technically, one could use the other modules (such as `vec2`, `particle`, etc) all by themselves by manually creating 
+//!
+//! Technically, one could use the other modules (such as `vec2`, `particle`, etc) all by themselves by manually creating
 //! everything and making loops to call everything's update functions, etc.
-//! 
-//! However, this would be very tedious and not too helpful. Instead, the main interface to this engine is provided by this 
-//! `Sim` struct. This struct manages lists of all of the simulation's active particles, forces, constraints, etc, and it 
+//!
+//! However, this would be very tedious and not too helpful. Instead, the main interface to this engine is provided by this
+//! `Sim` struct. This struct manages lists of all of the simulation's active particles, forces, constraints, etc, and it
 //! automatically manages their updating, timekeeping, etc.
-//! 
-//! Once setting up the simulation with all of the particles, constraint, and forces, one simply needs to call the 
+//!
+//! Once setting up the simulation with all of the particles, constraint, and forces, one simply needs to call the
 //! Sim::step_simulation method with the desired (or calculated) timestep, and it will handle all of the physics.
-//! 
+//!
 //! Example usage:
-//! 
+//!
 //! ```rust
 //! let mut sim = Sim::new();
-//! 
+//!
 //! // Add particles, forces, constraints, etc //
-//! 
+//!
 //! loop {
 //!     sim.step_simulation(1.0/FPS);
 //! }
