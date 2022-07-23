@@ -23,7 +23,7 @@ This boils it down to only three conservation laws:
 Why particle based?
 - 
 
-## References:
+## References, Ideas, Inspiration:
 - Youtube [playlist](https://youtube.com/playlist?list=PLvypLlLlZuNhcdtPKfQ25cpmhBuWWDZzR) for ideas
 - Work of [Miles Macklin](http://blog.mmacklin.com/) and [Matthias Müller](https://matthias-research.github.io/pages/)
 - Papers:
@@ -34,4 +34,3 @@ Why particle based?
 ## Simulation Methods:
 - Forces (force based dynamics)
 - Constraints (position based dynamics)
-- Impulses (impulse based dynamics)
