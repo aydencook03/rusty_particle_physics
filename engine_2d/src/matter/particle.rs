@@ -23,12 +23,12 @@
 //!     .vel(50.0, 70.0)
 //!     .color(EARTH_BLUE);
 //! 
-//! let mut particle2 = Particle::new();
-//! particle2.vel = Vec2::new(7.0, 0.0);
-//! 
 //! particle.forces.push(Vec2::new(0.0, -400.0));
 //! particle.update(0.01);
 //! println!("{}", particle.pos.x);
+//! 
+//! let mut particle2 = Particle::new();
+//! particle2.vel = Vec2::new(7.0, 0.0);
 //! ```
 
 use crate::vec2::Vec2;
@@ -40,14 +40,14 @@ pub const CRIMSON: (u8, u8, u8, u8) = (220, 20, 60, 255);
 pub const EARTH_BLUE: (u8, u8, u8, u8) = (10, 30, 220, 255);
 pub const FOREST_GREEN: (u8, u8, u8, u8) = (1, 79, 55, 255);
 
-/// A physical particle. Is only aware of its own properties, state, and the forces acting on it (obeys locality)
+/// A physical particle. Is only aware of its own properties, state, and the forces acting on it.
 #[derive(Default, Clone)]
 pub struct Particle {
     /// mass of the particle
     pub mass: f64,
     /// radius of the particle
     pub radius: f64,
-    /// 32-bit color: (r, g, b, alpha)
+    /// 32-bit color: (r, g, b, a)
     pub color: (u8, u8, u8, u8),
     /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
     pub group_num: u32,
@@ -110,7 +110,8 @@ impl Particle {
     /// Particle (uses Semi-implicit/Symplectic Euler).
     ///
     /// A classical particle behaves according to:
-    /// $$\frac{d}{dt}\begin{bmatrix}\vec{x} \\\ \vec{v}\end{bmatrix}=\begin{bmatrix}\vec{v} \\\ \frac{1}{m}\Sigma\vec{F}\end{bmatrix}$$
+    /// $$\frac{d}{dt}\begin{bmatrix}\vec{x} \\\ \vec{v}\end{bmatrix}=
+    /// \begin{bmatrix}\vec{v} \\\ \frac{1}{m}\Sigma\vec{F}\end{bmatrix}$$
     ///
     /// This numerical integration scheme is a first-order symplectic integrator that solves this 
     /// differential equation using the following steps:
