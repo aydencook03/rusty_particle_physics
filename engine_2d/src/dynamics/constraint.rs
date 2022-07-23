@@ -1,4 +1,4 @@
-use crate::matter::particle::Particle;
+use crate::particle::Particle;
 use crate::vec2::Vec2;
 
 /// Constraint on a Particle or between linked Particles.

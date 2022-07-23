@@ -1,5 +1,5 @@
 use crate::dynamics::constraint::Constraint;
-use crate::matter::particle::Particle;
+use crate::particle::Particle;
 use crate::vec2::Vec2;
 
 /// Force on a Particle or between interacting Particles

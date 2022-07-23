@@ -50,7 +50,7 @@ use softbuffer::GraphicsContext;
 
 use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Stroke, Transform};
 
-const DEFAULT_COLOR: (u8, u8, u8, u8) = rusty_particle_physics_2d::matter::particle::GREY;
+const DEFAULT_COLOR: (u8, u8, u8, u8) = rusty_particle_physics_2d::particle::GREY;
 const STROKE: f32 = 2.5;
 const PAN_STEP: f64 = 20.0;
 const ZOOM_STEP: f64 = 0.15;
