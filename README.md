@@ -1,7 +1,7 @@
 # Rusty Particle Physics
 
 ## Technical Scope
-In order to help right the urge of wanting to add more 
+In order to help fight the urge of wanting to add more 
 and more complex features, I've outlined the scope of 
 this engine.
 
