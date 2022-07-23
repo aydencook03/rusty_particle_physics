@@ -1,6 +1,10 @@
 # Rusty Particle Physics
 
 ## Technical Scope
+In order to help right the urge of wanting to add more 
+and more complex features, I've outlined the scope of 
+this engine.
+
 This is a classical, non-relativistic, non-field-theoretic, particle based physics engine.
 
 But what does this mean exactly?
