@@ -1,5 +1,7 @@
 pub mod dynamics;
+pub mod interaction;
 pub mod particle;
+pub mod rendering;
 pub mod sim;
 pub mod vec2;
 

@@ -34,6 +34,7 @@
 //! window.run(sim);
 //! ```
 
+use rusty_particle_physics_2d::interaction;
 use rusty_particle_physics_2d::sim::Sim;
 use rusty_particle_physics_2d::vec2::Vec2;
 
@@ -170,7 +171,8 @@ impl Renderer {
                         self.zoom = 1.0;
                         self.view_offset = Vec2::zero();
                     }
-                    VirtualKeyCode::Space => sim.running = !sim.running,
+                    VirtualKeyCode::Space => interaction::pause_play(&mut sim),
+                    VirtualKeyCode::R => interaction::restart(&mut sim),
                     VirtualKeyCode::Q => *control_flow = ControlFlow::Exit,
                     _ => (),
                 },
