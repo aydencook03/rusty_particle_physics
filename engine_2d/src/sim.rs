@@ -55,7 +55,47 @@ impl<'a> Sim<'a> {
             self.time += dt;
         }
     }
+}
 
+impl<'a> Sim<'a> {
+    pub fn add_particle(self: &mut Self, particle: Particle) {
+        self.particles.push(particle);
+    }
+
+    pub fn remove_particle(self: &mut Self, index: usize) {
+        self.particles.swap_remove(index);
+    }
+
+    pub fn clear_particles(self: &mut Self) {
+        self.particles.clear();
+    }
+
+    pub fn add_force(self: &mut Self, force: Force<'a>) {
+        self.forces.push(force);
+    }
+
+    pub fn remove_force(self: &mut Self, index: usize) {
+        self.forces.swap_remove(index);
+    }
+
+    pub fn clear_forces(self: &mut Self) {
+        self.forces.clear();
+    }
+
+    pub fn add_constraint(self: &mut Self, constraint: Constraint<'a>) {
+        self.constraints.push(constraint);
+    }
+
+    pub fn remove_constraint(self: &mut Self, index: usize) {
+        self.constraints.swap_remove(index);
+    }
+
+    pub fn clear_constraints(self: &mut Self) {
+        self.constraints.clear();
+    }
+}
+
+impl<'a> Sim<'a> {
     fn handle_constraints(self: &mut Self) {
         for _ in 0..self.constraint_passes {
             for constraint in &mut self.constraints {
@@ -66,7 +106,7 @@ impl<'a> Sim<'a> {
 
     fn send_forces_to_particles(self: &mut Self) {
         for force in &mut self.forces {
-            force.send_force();
+            force.send();
         }
     }
 

@@ -53,7 +53,7 @@ pub enum Force<'a> {
 
 impl<'a> Force<'a> {
     /// Send the Force to the Particle(s)
-    pub fn send_force(self: &Self) {
+    pub fn send(self: &Self) {
         todo!();
     }
 }

@@ -29,6 +29,8 @@
 //!
 //! let mut particle2 = Particle::new();
 //! particle2.vel = Vec2::new(7.0, 0.0);
+//! particle2.update(1.0/60.0);
+//! println!("{}", particle2.pos);
 //! ```
 
 use crate::vec2::Vec2;
