@@ -35,6 +35,7 @@
 //! ```
 
 use rusty_particle_physics_2d::interaction;
+use rusty_particle_physics_2d::rendering::View2D;
 use rusty_particle_physics_2d::sim::Sim;
 use rusty_particle_physics_2d::vec2::Vec2;
 
@@ -51,17 +52,12 @@ use softbuffer::GraphicsContext;
 
 use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Stroke, Transform};
 
-const DEFAULT_COLOR: (u8, u8, u8, u8) = rusty_particle_physics_2d::particle::GREY;
 const STROKE: f32 = 2.5;
-const PAN_STEP: f64 = 20.0;
-const ZOOM_STEP: f64 = 0.15;
+const STROKE_COLOR: (u8, u8, u8, u8) = rusty_particle_physics_2d::particle::BLACK;
 
 pub struct Renderer {
-    bg_color: (u8, u8, u8, u8),
-    view_offset: Vec2,
-    zoom: f64,
+    view: View2D,
     event_loop: EventLoop<()>,
-    time: Instant,
     context: GraphicsContext<Window>,
 }
 
@@ -83,11 +79,8 @@ impl Renderer {
         };
 
         Renderer {
-            bg_color: DEFAULT_COLOR,
-            view_offset: Vec2::new(0.0, 0.0),
-            zoom: 1.0,
+            view: View2D::new(),
             event_loop,
-            time: Instant::now(),
             context: unsafe { GraphicsContext::new(window) }.unwrap(),
         }
     }
@@ -98,7 +91,7 @@ impl Renderer {
     /// let window = Renderer::new(WIDTH, HEIGHT).with_color(((R, G, B, A)));
     /// ```
     pub fn with_color(mut self: Self, color: (u8, u8, u8, u8)) -> Self {
-        self.bg_color = color;
+        self.view.bg_color = color;
         self
     }
 
@@ -131,6 +124,8 @@ impl Renderer {
 
     /// Run the given simulation in a new window.
     pub fn run(mut self: Self, mut sim: Sim<'static>) {
+        let mut time = Instant::now();
+
         self.event_loop.run(move |event, _, control_flow| {
             // ControlFlow::Poll continuously runs the event loop, even if the OS hasn't
             // dispatched any events. This is ideal for games and similar applications.
@@ -141,7 +136,7 @@ impl Renderer {
                     event: WindowEvent::CloseRequested,
                     ..
                 } => {
-                    // stop the event loop, therefore closing the window
+                    // stop the event loop, and therefore close the window
                     *control_flow = ControlFlow::Exit
                 }
                 Event::DeviceEvent {
@@ -153,24 +148,13 @@ impl Renderer {
                         }),
                     ..
                 } => match code {
-                    VirtualKeyCode::Left => {
-                        self.view_offset.x -= PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0);
-                    }
-                    VirtualKeyCode::Right => {
-                        self.view_offset.x += PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0);
-                    }
-                    VirtualKeyCode::Up => {
-                        self.view_offset.y += PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0);
-                    }
-                    VirtualKeyCode::Down => {
-                        self.view_offset.y -= PAN_STEP / std::f64::consts::E.powf(self.zoom - 1.0);
-                    }
-                    VirtualKeyCode::Equals => self.zoom += ZOOM_STEP,
-                    VirtualKeyCode::Minus => self.zoom -= ZOOM_STEP,
-                    VirtualKeyCode::Return => {
-                        self.zoom = 1.0;
-                        self.view_offset = Vec2::zero();
-                    }
+                    VirtualKeyCode::Left => self.view.pan_left(),
+                    VirtualKeyCode::Right => self.view.pan_right(),
+                    VirtualKeyCode::Up => self.view.pan_up(),
+                    VirtualKeyCode::Down => self.view.pan_down(),
+                    VirtualKeyCode::Equals => self.view.zoom_in(),
+                    VirtualKeyCode::Minus => self.view.zoom_out(),
+                    VirtualKeyCode::Return => self.view.reset(),
                     VirtualKeyCode::Space => interaction::pause_play(&mut sim),
                     VirtualKeyCode::R => interaction::restart(&mut sim),
                     VirtualKeyCode::Q => *control_flow = ControlFlow::Exit,
@@ -182,11 +166,6 @@ impl Renderer {
                     // get window width, height, and zoom
                     let width = Self::dyn_width(&self.context) as f64;
                     let height = Self::dyn_height(&self.context) as f64;
-                    let zoom = std::f64::consts::E.powf(self.zoom - 1.0);
-                    // create affine transformation data
-                    let identity = ((1.0, 0.0), (0.0, 1.0));
-                    let scale = ((zoom, 0.0), (0.0, zoom));
-                    let pan = self.view_offset * -1.0;
 
                     // create buffers
                     let mut draw_buffer = Pixmap::new(width as u32, height as u32).unwrap();
@@ -196,24 +175,21 @@ impl Renderer {
                     let mut style = Paint::default();
                     style.anti_alias = true;
                     let mut stroke = Stroke::default();
-                    stroke.width = STROKE * (zoom as f32);
+                    stroke.width = STROKE * (self.view.parameterized_zoom() as f32);
 
                     // paint the background
                     draw_buffer.fill(Color::from_rgba8(
-                        self.bg_color.0,
-                        self.bg_color.1,
-                        self.bg_color.2,
-                        self.bg_color.3,
+                        self.view.bg_color.0,
+                        self.view.bg_color.1,
+                        self.view.bg_color.2,
+                        self.view.bg_color.3,
                     ));
 
                     // draw the sim's particles
                     for particle in &sim.particles {
-                        // get particle properties mapped to window space
-                        let Vec2 { x, y } = particle
-                            .pos
-                            .affine_transformation(identity, pan)
-                            .affine_transformation(scale, Vec2::zero());
-                        let radius = particle.radius * zoom;
+                        // get particle position and radius mapped to window space
+                        let (Vec2 { x, y }, radius) =
+                            self.view.map_to_view(particle.pos, particle.radius);
                         let (r, g, b, a) = particle.color;
 
                         let path = {
@@ -227,7 +203,12 @@ impl Renderer {
                         };
 
                         // draw the particle outlines
-                        style.set_color_rgba8(0, 0, 0, 255);
+                        style.set_color_rgba8(
+                            STROKE_COLOR.0,
+                            STROKE_COLOR.1,
+                            STROKE_COLOR.2,
+                            STROKE_COLOR.3,
+                        );
                         draw_buffer.stroke_path(
                             &path,
                             &style,
@@ -258,7 +239,7 @@ impl Renderer {
                         .set_buffer(&framebuffer, width as u16, height as u16);
 
                     // find the time since last frame
-                    let elapsed = (Instant::now().duration_since(self.time).as_micros() as f64)
+                    let elapsed = (Instant::now().duration_since(time).as_micros() as f64)
                         * (10.0_f64).powi(-6);
                     // step the simulation forward by that time
                     sim.step_simulation(elapsed);
@@ -273,7 +254,7 @@ impl Renderer {
                         .as_str(),
                     );
                     // set time for next frame to use
-                    self.time = Instant::now();
+                    time = Instant::now();
                 }
                 _ => (),
             };

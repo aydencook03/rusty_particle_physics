@@ -1,4 +1,4 @@
-//! Provides the Particle type and some colors.
+//! Provides the `Particle` type and some colors.
 //!
 //! A particle is the most fundamental object in the physics engine, and can be used on its own if needed, as it
 //! handles its own interactions with the outside world through forces.
