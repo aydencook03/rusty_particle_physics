@@ -22,8 +22,8 @@
 //! }
 //! ```
 
-use crate::sim_dynamics::force::Force;
 use crate::particle::Particle;
+use crate::sim_dynamics::force::Force;
 
 #[derive(Default)]
 pub struct Sim<'a> {

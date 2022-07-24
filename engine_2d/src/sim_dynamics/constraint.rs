@@ -68,7 +68,11 @@ impl<'a> Constraint<'a> {
     /// Handle the Constraint statically
     pub fn handle(self: &mut Self) {
         match self {
-            Constraint::StayInRect { particle, top_left, bottom_right } => {
+            Constraint::StayInRect {
+                particle,
+                top_left,
+                bottom_right,
+            } => {
                 if particle.pos.x - particle.radius < top_left.x {
                     particle.pos.x = top_left.x + particle.radius;
                 } else if particle.pos.x + particle.radius > bottom_right.x {
