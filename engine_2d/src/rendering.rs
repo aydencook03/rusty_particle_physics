@@ -1,15 +1,15 @@
 //! Things that would be common to any 2d-renderer.
-//! 
-//! This module contains the View2D object, which any renderer can use to easily keep track of things like 
-//! panning, zooming, background color, etc. It also contains methods to help map between the simulation's coordinates 
+//!
+//! This module contains the View2D object, which any renderer can use to easily keep track of things like
+//! panning, zooming, background color, etc. It also contains methods to help map between the simulation's coordinates
 //! to a coordinate on the renderer's window, which can be hard to implement manually due to the zoom and pan.
-//! 
+//!
 //! # Coordinate Convention
-//! 
-//! This module assumes that the (0, 0) coordinate is in the center, and that (+, +) is to the top right... ie, 
+//!
+//! This module assumes that the (0, 0) coordinate is in the center, and that (+, +) is to the top right... ie,
 //! it uses standard euclidean space.
-//! 
-//! For example, if (0, 0) is in the top left of the window for your renderer, after getting the 
+//!
+//! For example, if (0, 0) is in the top left of the window for your renderer, after getting the
 //! transformed coordinates (using [`View2D::map_to_view`]), you would need to draw them as so:
 //! ```rust
 //! draw_point((x + width / 2.0), (height / 2.0 - y));
@@ -54,7 +54,7 @@ impl View2D {
     }
 
     /// Used to map the zoom parameter to the actual zoom amount.
-    /// 
+    ///
     /// It uses exp(zoom - 1.0). This is useful because the zoom amount should never become negative.
     pub fn parameterized_zoom(self: &Self) -> f64 {
         std::f64::consts::E.powf(self.zoom - 1.0)
@@ -91,8 +91,8 @@ impl View2D {
     }
 
     /// Maps a circle and its properties to the transformed (panned, zoomed) view space.
-    /// 
-    /// The 2d view into the simulation is likely to be panned around or zoomed in and out, so this function 
+    ///
+    /// The 2d view into the simulation is likely to be panned around or zoomed in and out, so this function
     /// maps a set of coordinates in the simulation space to what they would be on the panned and zoomed view.
     pub fn map_to_view(self: &Self, pos: Vec2, radius: f64) -> (Vec2, f64) {
         let zoom = self.parameterized_zoom();

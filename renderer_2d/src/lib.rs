@@ -1,4 +1,4 @@
-//! This is an example implementation renderer for the 
+//! This is an example implementation renderer for the
 //! [`rusty_particle_physics_2d`](https://github.com/aydencook03/rusty_particle_physics) crate.
 //! It is pretty simple, and is mainly used to test the 2d physics engine.
 //!
