@@ -1,37 +1,10 @@
-//! Provides the `Particle` type and some colors.
+//! Provides the logic for particles, forces, and constraints.
+//! 
+//! Particle. Force (represented by a Vec2). Constraint.
 //!
 //! A particle is the most fundamental object in the physics engine, and can be used on its own if needed, as it
-//! handles its own interactions with the outside world through forces.
-//!  
-//! It contains a set of physical properties such as mass, radius, color, etc.
-//!
-//! It also contains the state of the particle, namely its position and velocity.
-//! As the scope of this engine is classical, non-relativistic, and non-field theoretic, the particle's state
-//! evolves according to the following simple rules:
-//!
-//! External Forces update velocity.
-//! Velocity updates position.
-//!
-//! Therefore, the Particle::update method is explicit in velocity, and uses the Symplectic-Euler method.
-//!
-//! # Example usage (without using Sim):
-//!
-//! ```rust
-//! let mut particle = Particle::new()
-//!     .radius(10.0)
-//!     .pos(0.0, 0.0)
-//!     .vel(50.0, 70.0)
-//!     .color(EARTH_BLUE);
-//!
-//! particle.forces.push(Vec2::new(0.0, -400.0));
-//! particle.update(0.01);
-//! println!("{}", particle.pos.x);
-//!
-//! let mut particle2 = Particle::new();
-//! particle2.vel = Vec2::new(7.0, 0.0);
-//! particle2.update(1.0/60.0);
-//! println!("{}", particle2.pos);
-//! ```
+//! handles its own interactions with the outside world through forces, and makes sure that it satisfies a set of 
+//! constraints in the process.
 
 use crate::vec2::Vec2;
 
@@ -42,8 +15,8 @@ pub const CRIMSON: (u8, u8, u8, u8) = (220, 20, 60, 255);
 pub const EARTH_BLUE: (u8, u8, u8, u8) = (10, 30, 220, 255);
 pub const FOREST_GREEN: (u8, u8, u8, u8) = (1, 79, 55, 255);
 
-/// A physical particle. Is only aware of its own properties, state, and the forces acting on it.
-#[derive(Default, Clone)]
+/// A physical particle.
+#[derive(Default)]
 pub struct Particle {
     /// mass of the particle
     pub mass: f64,
@@ -55,12 +28,12 @@ pub struct Particle {
     pub group_num: u32,
     /// 2-dimensional position of the particle
     pub pos: Vec2,
-    /// previous 2-dimensional position of the particle
-    pub prev_pos: Vec2,
     /// 2-dimensional velocity of the particle
     pub vel: Vec2,
     /// a collection of all of the forces acting on the particle
     pub forces: Vec<Vec2>,
+    /// a collection of all of the constraints that the particle must obey
+    pub constraints: Vec<Constraint>,
 }
 
 impl Particle {
@@ -122,16 +95,26 @@ impl Particle {
     /// $$\vec{v} _{n+1} = \vec{v} _{n} + \frac{1}{m}\Sigma\vec{F} _{n}\Delta t$$
     /// $$\vec{x} _{n+1} = \vec{x} _{n} + \vec{v} _{n+1}\Delta t$$
     pub fn update(self: &mut Self, dt: f64) {
-        let mut total_force = Vec2::new(0.0, 0.0);
+        let mut total_force = Vec2::zero();
         for force in &mut self.forces {
             total_force += *force;
         }
         self.vel += (total_force / self.mass) * dt;
-        self.prev_pos = self.pos;
-        self.pos += self.vel * dt;
+        let new_pos = self.pos + self.vel * dt;
+        // handle constraints to change new_pos to make sure it satisfies all constraints... //
+        self.vel = (new_pos - self.pos) / dt;
+        self.pos = new_pos;
     }
+}
 
-    pub fn vel_from_old_pos(self: &mut Self, dt: f64) {
-        self.vel = (self.pos - self.prev_pos)/dt;
-    }
+pub struct Constraint {
+    pub function: Box<dyn Fn(Vec2) -> f64>,
+    pub stiffness: f64,
+    pub kind: ConstraintKind,
+    pub broken: bool,
+}
+
+pub enum ConstraintKind {
+    Equality,
+    Inequality,
 }

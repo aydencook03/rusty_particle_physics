@@ -22,17 +22,14 @@
 //! }
 //! ```
 
-use crate::dynamics::constraint::Constraint;
-use crate::dynamics::force::Force;
+use crate::sim_dynamics::force::Force;
 use crate::particle::Particle;
 
 #[derive(Default)]
 pub struct Sim<'a> {
     pub running: bool,
     pub time: f64,
-    pub constraint_passes: u8,
     pub particles: Vec<Particle>,
-    pub constraints: Vec<Constraint<'a>>,
     pub forces: Vec<Force<'a>>,
 }
 
@@ -41,16 +38,13 @@ impl<'a> Sim<'a> {
     pub fn new() -> Sim<'a> {
         Sim {
             running: true,
-            constraint_passes: 3,
             ..Default::default()
         }
     }
 
     pub fn step_simulation(self: &mut Self, dt: f64) {
         if self.running {
-            // what should the order of these be?
-            self.handle_constraints();
-            self.send_forces_to_particles();
+            self.calculate_forces();
             self.update_particles(dt);
             self.time += dt;
         }
@@ -81,30 +75,10 @@ impl<'a> Sim<'a> {
     pub fn clear_forces(self: &mut Self) {
         self.forces.clear();
     }
-
-    pub fn add_constraint(self: &mut Self, constraint: Constraint<'a>) {
-        self.constraints.push(constraint);
-    }
-
-    pub fn remove_constraint(self: &mut Self, index: usize) {
-        self.constraints.swap_remove(index);
-    }
-
-    pub fn clear_constraints(self: &mut Self) {
-        self.constraints.clear();
-    }
 }
 
 impl<'a> Sim<'a> {
-    fn handle_constraints(self: &mut Self) {
-        for _ in 0..self.constraint_passes {
-            for constraint in &mut self.constraints {
-                constraint.handle();
-            }
-        }
-    }
-
-    fn send_forces_to_particles(self: &mut Self) {
+    fn calculate_forces(self: &mut Self) {
         for force in &mut self.forces {
             force.send();
         }

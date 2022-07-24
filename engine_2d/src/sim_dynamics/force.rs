@@ -1,4 +1,4 @@
-use crate::dynamics::constraint::Constraint;
+use crate::sim_dynamics::constraint::Constraint;
 use crate::particle::Particle;
 use crate::vec2::Vec2;
 

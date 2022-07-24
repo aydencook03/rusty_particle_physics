@@ -1,4 +1,4 @@
-pub mod dynamics;
+pub mod sim_dynamics;
 pub mod interaction;
 pub mod particle;
 pub mod rendering;
@@ -12,7 +12,7 @@ pub mod prelude {
     //! use rusty_particle_physics_2d::prelude::*;
     //! ```
     pub use crate::{
-        dynamics::{constraint::Constraint, force::Force},
+        sim_dynamics::{constraint::Constraint, force::Force},
         particle::*,
         sim::Sim,
         vec2::Vec2,
