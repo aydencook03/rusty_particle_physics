@@ -2,6 +2,7 @@ use renderer_2d::Renderer;
 use rusty_particle_physics_2d::prelude::*;
 
 fn main() {
+    let window = Renderer::new(600, 600);
     let mut sim = Sim::new();
 
     sim.add_particle({
@@ -19,5 +20,5 @@ fn main() {
         particle
     });
 
-    Renderer::new(600, 600).run(sim);
+    window.run(sim);
 }

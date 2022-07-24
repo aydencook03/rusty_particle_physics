@@ -5,7 +5,7 @@
 //!  
 //! It contains a set of physical properties such as mass, radius, color, etc.
 //!
-//! It also contains the state of the particle, namely its Position and Velocity.
+//! It also contains the state of the particle, namely its position and velocity.
 //! As the scope of this engine is classical, non-relativistic, and non-field theoretic, the particle's state
 //! evolves according to the following simple rules:
 //!
@@ -14,7 +14,7 @@
 //!
 //! Therefore, the Particle::update method is explicit in velocity, and uses the Symplectic-Euler method.
 //!
-//! Example usage (without using Sim):
+//! # Example usage (without using Sim):
 //!
 //! ```rust
 //! let mut particle = Particle::new()

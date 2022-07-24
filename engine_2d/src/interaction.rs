@@ -1,4 +1,4 @@
-//! For interacting with the sim while it's running.
+//! For interacting with the simulation while it's running.
 
 use crate::sim::Sim;
 

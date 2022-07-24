@@ -10,7 +10,7 @@
 //! Once setting up the simulation with all of the particles, constraint, and forces, one simply needs to call the
 //! Sim::step_simulation method with the desired (or calculated) timestep, and it will handle all of the physics.
 //!
-//! Example usage:
+//! # Example usage:
 //!
 //! ```rust
 //! let mut sim = Sim::new();

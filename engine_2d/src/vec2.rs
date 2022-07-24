@@ -1,6 +1,7 @@
-//! Provides a 2-dimensional vector object, along with a lot of useful functions relating to them.
+//! Provides a 2-dimensional vector object, and associated functions.
 //!
-//! Such as polar coordinates, dot products, cross products, affine transformations, etc.
+//! Includes funcionts for things such as polar coordinates, dot products, 
+//! cross products, affine transformations, etc.
 
 /// A 2d euclidean vector
 #[derive(Copy, Clone, Default)]

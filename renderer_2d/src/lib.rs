@@ -1,14 +1,15 @@
-//! This is a "Minimal Viable Product" renderer for the `rusty_particle_physics_2d` crate.
+//! This is an example implementation renderer for the 
+//! [`rusty_particle_physics_2d`](https://github.com/aydencook03/rusty_particle_physics) crate.
 //! It is pretty simple, and is mainly used to test the 2d physics engine.
 //!
-//! It uses [winit](https://github.com/rust-windowing/winit) for the event_loop, window, and keyboard,
-//! [std::time](https://doc.rust-lang.org/std/time/index.html) for timekeeping,
-//! [softbuffer](https://github.com/john01dav/softbuffer) for accessing the window's framebuffer,
-//! and [tiny_skia](https://github.com/RazrFalcon/tiny-skia) for turning shapes into
+//! It uses [`winit`](https://github.com/rust-windowing/winit) for the event_loop, window, and keyboard,
+//! [`std::time`](https://doc.rust-lang.org/std/time/index.html) for timekeeping,
+//! [`softbuffer`](https://github.com/john01dav/softbuffer) for accessing the window's framebuffer,
+//! and [`tiny_skia`](https://github.com/RazrFalcon/tiny-skia) for turning shapes into
 //! pixels (the rasterization algorithms).
 //!
 //!
-//! Key Controls:
+//! # Controls:
 //!
 //! |  Key   |   Action    |
 //! |--------|-------------|
@@ -20,7 +21,7 @@
 //! | Q      | Quit        |
 //!
 //!
-//! Example usage:
+//! # Example usage:
 //!
 //! ```rust
 //! use rusty_particle_physics_2d::prelude::*;
@@ -194,6 +195,7 @@ impl Renderer {
 
                         let path = {
                             let mut pb = PathBuilder::new();
+                            // draw the particle using (0,0) to be in the center of the screen
                             pb.push_circle(
                                 (x + width / 2.0) as f32,
                                 (height / 2.0 - y) as f32,
