@@ -20,5 +20,13 @@ fn main() {
         particle
     });
 
+    let first = &mut sim.particles[0];
+
+    sim.add_constraint(Constraint::StayInRect {
+        particle: first,
+        top_left: Vec2::new(-20.0, 90.0),
+        bottom_right: Vec2::new(100.0, -20.0),
+    });
+
     window.run(sim);
 }

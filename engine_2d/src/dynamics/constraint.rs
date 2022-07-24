@@ -21,6 +21,12 @@ pub enum Constraint<'a> {
         end: Vec2,
     },
 
+    StayInRect {
+        particle: &'a mut Particle,
+        top_left: Vec2,
+        bottom_right: Vec2,
+    },
+
     FixedDistance {
         particle: &'a mut Particle,
         point: Vec2,
@@ -60,7 +66,21 @@ pub enum Constraint<'a> {
 
 impl<'a> Constraint<'a> {
     /// Handle the Constraint statically
-    pub fn handle(self: &Self) {
-        todo!();
+    pub fn handle(self: &mut Self) {
+        match self {
+            Constraint::StayInRect { particle, top_left, bottom_right } => {
+                if particle.pos.x - particle.radius < top_left.x {
+                    particle.pos.x = top_left.x + particle.radius;
+                } else if particle.pos.x + particle.radius > bottom_right.x {
+                    particle.pos.x = bottom_right.x - particle.radius;
+                }
+                if particle.pos.y - particle.radius < top_left.y {
+                    particle.pos.y = top_left.y + particle.radius;
+                } else if particle.pos.y + particle.radius > bottom_right.y {
+                    particle.pos.y = bottom_right.y - particle.radius;
+                }
+            }
+            _ => (),
+        }
     }
 }

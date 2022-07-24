@@ -55,6 +55,8 @@ pub struct Particle {
     pub group_num: u32,
     /// 2-dimensional position of the particle
     pub pos: Vec2,
+    /// previous 2-dimensional position of the particle
+    pub prev_pos: Vec2,
     /// 2-dimensional velocity of the particle
     pub vel: Vec2,
     /// a collection of all of the forces acting on the particle
@@ -125,6 +127,11 @@ impl Particle {
             total_force += *force;
         }
         self.vel += (total_force / self.mass) * dt;
+        self.prev_pos = self.pos;
         self.pos += self.vel * dt;
+    }
+
+    pub fn vel_from_old_pos(self: &mut Self, dt: f64) {
+        self.vel = (self.pos - self.prev_pos)/dt;
     }
 }
