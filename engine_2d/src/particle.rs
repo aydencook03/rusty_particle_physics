@@ -27,6 +27,8 @@ pub struct Particle {
     pub color: (u8, u8, u8, u8),
     /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
     pub group_num: u32,
+    /// number of times that constraint solving is cycled through
+    pub constraint_passes: u32,
     /// 2-dimensional position of the particle
     pub pos: Vec2,
     /// 2-dimensional velocity of the particle
@@ -44,6 +46,7 @@ impl Particle {
             mass: 10.0,
             radius: 10.0,
             color: CRIMSON,
+            constraint_passes: 3,
             ..Default::default()
         }
     }
@@ -101,16 +104,22 @@ impl Particle {
             total_force += *force;
         }
         self.vel += (total_force / self.mass) * dt;
-        let new_pos = self.pos + self.vel * dt;
-        // handle constraints to change new_pos to make sure it satisfies all constraints... //
+        let mut new_pos = self.pos + self.vel * dt;
+        new_pos = Constraint::solver(&self.constraints, new_pos, self.constraint_passes);
         self.vel = (new_pos - self.pos) / dt;
         self.pos = new_pos;
     }
 }
 
 
+/// The type of constraint.
+/// 
+/// The `Equality` type means that the constraint is satisfied if function = 0.
+/// The `Inequality` type means that the constraint is satisfied if function ≥ 0.
 pub enum ConstraintKind {
+    /// The constraint is satisfied if function = 0.
     Equality,
+    /// The constraint is satisfied if function ≥ 0.
     Inequality,
 }
 
@@ -122,10 +131,7 @@ pub struct Constraint {
 }
 
 impl Constraint {
-    pub fn handle(self: &mut Self) -> Vec2 {
-        match self.kind {
-            ConstraintKind::Equality => todo!(),
-            ConstraintKind::Inequality => todo!(),
-        }
+    fn solver(_constraints: &[Constraint], pos: Vec2, _iterations: u32) -> Vec2 {
+        pos
     }
 }

@@ -12,6 +12,18 @@ fn main() {
             .vel(50.0, 70.0)
             .color(EARTH_BLUE);
         particle.forces.push(Vec2::new(0.0, -400.0));
+
+        // CONSTRAINT TESTING
+        // lock particle to (0, 0)
+        particle.constraints.push(
+            Constraint {
+                function: Box::new(|pos| (pos - Vec2::new(0.0, 0.0)).mag()),
+                stiffness: 1.0,
+                kind: ConstraintKind::Equality,
+                broken: false,
+            }
+        );
+
         particle
     });
     sim.add_particle({

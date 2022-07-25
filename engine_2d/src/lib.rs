@@ -14,7 +14,7 @@ pub mod prelude {
     pub use crate::{
         particle::*,
         sim::Sim,
-        sim_dynamics::{constraint::Constraint, force::Force},
+        //sim_dynamics::{constraint::Constraint, force::Force},
         vec2::Vec2,
     };
 }
