@@ -168,9 +168,8 @@ impl Renderer {
                     let width = Self::dyn_width(&self.context) as f64;
                     let height = Self::dyn_height(&self.context) as f64;
 
-                    // create buffers
+                    // create buffer
                     let mut draw_buffer = Pixmap::new(width as u32, height as u32).unwrap();
-                    let mut framebuffer: Vec<u32> = Vec::new();
 
                     // create drawing styles
                     let mut style = Paint::default();
@@ -230,13 +229,12 @@ impl Renderer {
                         );
                     }
 
-                    // copy the contents from draw_buffer to framebuffer w/ required format
-                    for pixel in draw_buffer.pixels() {
-                        let rgb = (pixel.red(), pixel.green(), pixel.blue());
-                        framebuffer.push(Renderer::rgb_to_softbuffer(rgb));
-                    }
+                    // convert the draw_buffer to the format that Softbuffer uses
+                    let framebuffer: Vec<u32> = draw_buffer.pixels().into_iter().map(|pixel| {
+                        Renderer::rgb_to_softbuffer((pixel.red(), pixel.green(), pixel.blue()))
+                    }).collect();
 
-                    // write the contents of framebuffer to the window buffer
+                    // write the contents of framebuffer to the window's framebuffer
                     self.context
                         .set_buffer(&framebuffer, width as u16, height as u16);
 

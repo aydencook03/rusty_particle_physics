@@ -26,7 +26,7 @@ pub struct Particle {
     /// 32-bit color: (r, g, b, a)
     pub color: (u8, u8, u8, u8),
     /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
-    pub group_num: u32,
+    pub group: u32,
     /// number of times that constraint solving is cycled through
     pub constraint_passes: u32,
     /// 2-dimensional position of the particle
@@ -70,8 +70,8 @@ impl Particle {
     }
 
     /// A builder method to give the particle a specific group_num after creating it.
-    pub fn group_num(mut self: Self, group_num: u32) -> Particle {
-        self.group_num = group_num;
+    pub fn group(mut self: Self, group: u32) -> Particle {
+        self.group = group;
         self
     }
 
@@ -131,7 +131,10 @@ pub struct Constraint {
 }
 
 impl Constraint {
-    fn solver(_constraints: &[Constraint], pos: Vec2, _iterations: u32) -> Vec2 {
+    fn solver(_constraints: &[Constraint], pos: Vec2, iterations: u32) -> Vec2 {
+        for _ in 0..iterations {
+
+        };
         pos
     }
 }
