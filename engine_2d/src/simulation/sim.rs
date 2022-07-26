@@ -23,14 +23,14 @@
 //! ```
 
 use crate::particle::Particle;
-use crate::sim_dynamics::force::Force;
+use crate::simulation::sim_force::SimForce;
 
 #[derive(Default)]
 pub struct Sim<'a> {
     pub running: bool,
     pub time: f64,
     pub particles: Vec<Particle>,
-    pub forces: Vec<Force<'a>>,
+    pub forces: Vec<SimForce<'a>>,
 }
 
 impl<'a> Sim<'a> {
@@ -64,7 +64,7 @@ impl<'a> Sim<'a> {
         self.particles.clear();
     }
 
-    pub fn add_force(self: &mut Self, force: Force<'a>) {
+    pub fn add_force(self: &mut Self, force: SimForce<'a>) {
         self.forces.push(force);
     }
 

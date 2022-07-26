@@ -14,15 +14,13 @@ fn main() {
         particle.forces.push(Vec2::new(0.0, -400.0));
 
         // CONSTRAINT TESTING
-        // lock particle distance of 20.0 from center
-        particle.constraints.push(
-            Constraint {
-                function: Box::new(|pos| (pos - Vec2::new(0.0, 0.0)).mag() - 20.0),
-                stiffness: 1.0,
-                kind: ConstraintKind::Equality,
-                broken: false,
-            }
-        );
+        // lock particle distance to 20.0 from center
+        particle.constraints.push(Constraint {
+            function: Box::new(|pos| (pos - Vec2::new(0.0, 0.0)).mag() - 20.0),
+            stiffness: 1.0,
+            kind: ConstraintKind::Equality,
+            broken: false,
+        });
 
         particle
     });

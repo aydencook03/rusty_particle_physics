@@ -3,7 +3,7 @@ use crate::vec2::Vec2;
 
 /// Constraint on a Particle or between linked Particles.
 /// This simply holds the data, and can be used as a static constraint or a constraint force elsewhere
-pub enum Constraint<'a> {
+pub enum SimConstraint<'a> {
     /// The fundamental type of constraint.
     ///
     /// The other Constraint types usually return a configured GeneralConstraint when being handled.
@@ -64,11 +64,11 @@ pub enum Constraint<'a> {
     },
 }
 
-impl<'a> Constraint<'a> {
+impl<'a> SimConstraint<'a> {
     /// Handle the Constraint statically
     pub fn handle(self: &mut Self) {
         match self {
-            Constraint::StayInRect {
+            SimConstraint::StayInRect {
                 particle,
                 top_left,
                 bottom_right,

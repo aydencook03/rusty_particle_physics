@@ -35,9 +35,9 @@
 //! window.run(sim);
 //! ```
 
-use rusty_particle_physics_2d::interaction;
 use rusty_particle_physics_2d::rendering::View2D;
-use rusty_particle_physics_2d::sim::Sim;
+use rusty_particle_physics_2d::simulation::interaction;
+use rusty_particle_physics_2d::simulation::sim::Sim;
 use rusty_particle_physics_2d::vec2::Vec2;
 
 use winit::{
@@ -230,9 +230,13 @@ impl Renderer {
                     }
 
                     // convert the draw_buffer to the format that Softbuffer uses
-                    let framebuffer: Vec<u32> = draw_buffer.pixels().into_iter().map(|pixel| {
-                        Renderer::rgb_to_softbuffer((pixel.red(), pixel.green(), pixel.blue()))
-                    }).collect();
+                    let framebuffer: Vec<u32> = draw_buffer
+                        .pixels()
+                        .into_iter()
+                        .map(|pixel| {
+                            Renderer::rgb_to_softbuffer((pixel.red(), pixel.green(), pixel.blue()))
+                        })
+                        .collect();
 
                     // write the contents of framebuffer to the window's framebuffer
                     self.context

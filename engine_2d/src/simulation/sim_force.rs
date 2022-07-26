@@ -1,9 +1,9 @@
 use crate::particle::Particle;
-use crate::sim_dynamics::constraint::Constraint;
+use crate::simulation::sim_constraint::SimConstraint;
 use crate::vec2::Vec2;
 
 /// Force on a Particle or between interacting Particles
-pub enum Force<'a> {
+pub enum SimForce<'a> {
     /// The fundamental type of 2d force.
     ///
     /// The other Force types usually return a configured GeneralForce or RawForce when being handled.
@@ -28,7 +28,7 @@ pub enum Force<'a> {
     /// - dampened spring between Particles { LinkFixedDistance, stiffness, 1, 0.5 }
     /// - stiff pendulum { FixedDistance, 99, 1, 99 }
     ConstraintForce {
-        constraint_type: Constraint<'a>,
+        constraint_type: SimConstraint<'a>,
         k: f64,
         n: f64,
         b: f64,
@@ -51,7 +51,7 @@ pub enum Force<'a> {
     },
 }
 
-impl<'a> Force<'a> {
+impl<'a> SimForce<'a> {
     /// Send the Force to the Particle(s)
     pub fn send(self: &Self) {
         todo!();

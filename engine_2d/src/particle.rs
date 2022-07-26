@@ -1,4 +1,4 @@
-//! Provides the logic for particles, forces, and constraints.
+//! Provides the logic for particles, their forces, and their constraints.
 //!
 //! Particle. Force (represented by a Vec2). Constraint.
 //!
@@ -6,6 +6,7 @@
 //! handles its own interactions with the outside world through forces, and makes sure that it satisfies a set of
 //! constraints in the process.
 
+use crate::constraint::Constraint;
 use crate::vec2::Vec2;
 
 pub const WHITE: (u8, u8, u8, u8) = (255, 255, 255, 255);
@@ -14,7 +15,6 @@ pub const GREY: (u8, u8, u8, u8) = (40, 40, 40, 255);
 pub const CRIMSON: (u8, u8, u8, u8) = (220, 20, 60, 255);
 pub const EARTH_BLUE: (u8, u8, u8, u8) = (10, 30, 220, 255);
 pub const FOREST_GREEN: (u8, u8, u8, u8) = (1, 79, 55, 255);
-
 
 /// A physical particle.
 #[derive(Default)]
@@ -108,33 +108,5 @@ impl Particle {
         new_pos = Constraint::solver(&self.constraints, new_pos, self.constraint_passes);
         self.vel = (new_pos - self.pos) / dt;
         self.pos = new_pos;
-    }
-}
-
-
-/// The type of constraint.
-/// 
-/// The `Equality` type means that the constraint is satisfied if function = 0.
-/// The `Inequality` type means that the constraint is satisfied if function ≥ 0.
-pub enum ConstraintKind {
-    /// The constraint is satisfied if function = 0.
-    Equality,
-    /// The constraint is satisfied if function ≥ 0.
-    Inequality,
-}
-
-pub struct Constraint {
-    pub function: Box<dyn Fn(Vec2) -> f64>,
-    pub stiffness: f64,
-    pub kind: ConstraintKind,
-    pub broken: bool,
-}
-
-impl Constraint {
-    fn solver(_constraints: &[Constraint], pos: Vec2, iterations: u32) -> Vec2 {
-        for _ in 0..iterations {
-
-        };
-        pos
     }
 }
