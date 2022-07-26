@@ -11,6 +11,7 @@ pub enum ConstraintKind {
     Inequality,
 }
 
+/// A position based constraint.
 pub struct Constraint {
     pub function: Box<dyn Fn(Vec2) -> f64>,
     pub stiffness: f64,
