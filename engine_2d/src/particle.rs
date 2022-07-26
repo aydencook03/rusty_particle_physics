@@ -1,9 +1,9 @@
 //! Provides the logic for particles, their forces, and their constraints.
-//! 
-//! The particles in this engine obey locality, which is why most of the interesting force logic is handled by the 
-//! global simulation. As this engine is non-field theoretic, there are no fields to locally mediate forces, and so 
-//! most interesting forces depend on all of the other particles at that instant. The global sim object is aware of all 
-//! particles at once, so it can calculate all of the non-local forces and then pass the force vectors to the particles as 
+//!
+//! The particles in this engine obey locality, which is why most of the interesting force logic is handled by the
+//! global simulation. As this engine is non-field theoretic, there are no fields to locally mediate forces, and so
+//! most interesting forces depend on all of the other particles at that instant. The global sim object is aware of all
+//! particles at once, so it can calculate all of the non-local forces and then pass the force vectors to the particles as
 //! a Vec2 that they can then handle.
 //!
 //! A particle is the most fundamental object in the physics engine, and can be used on its own if needed, as it
