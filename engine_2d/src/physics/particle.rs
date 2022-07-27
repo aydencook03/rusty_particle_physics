@@ -34,7 +34,7 @@ pub struct Particle {
     /// 2-dimensional position of the particle
     pub pos: Vec2,
     /// the previous 2-dimensional position of the particle
-    pub old_pos: Vec2,
+    old_pos: Vec2,
     /// 2-dimensional velocity of the particle
     pub vel: Vec2,
     /// a collection of all of the forces acting on the particle
@@ -117,7 +117,8 @@ impl Particle {
 
     /// Update the velocity based on the previous position and the current position.
     /// 
-    /// This is mainly used for changing the velocity after some kind of non-physical constraint has been applied.
+    /// This is mainly used for changing the velocity after some kind of non-physical constraint or 
+    /// position change has been applied.
     pub fn update_vel(self: &mut Self, dt: f64) {
         self.vel = (self.pos - self.old_pos) / dt;
     }

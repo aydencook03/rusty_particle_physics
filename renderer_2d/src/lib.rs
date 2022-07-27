@@ -186,7 +186,7 @@ impl Renderer {
                     ));
 
                     // draw the sim's particles
-                    for particle in &sim.particles {
+                    for particle in sim.particles() {
                         // get particle position and radius mapped to window space
                         let (Vec2 { x, y }, radius) =
                             self.view.map_to_view(particle.pos, particle.radius);
@@ -253,7 +253,7 @@ impl Renderer {
                         format!(
                             "Simulation - FPS: {:.0} - Time: {:.3}",
                             1.0 / elapsed,
-                            sim.time
+                            sim.time()
                         )
                         .as_str(),
                     );

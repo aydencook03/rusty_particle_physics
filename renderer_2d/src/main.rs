@@ -17,8 +17,8 @@ fn main() {
     let mut particle2 = Particle::new().radius(4.0).pos(90.0, 70.0).vel(20.0, -20.0);
     particle2.forces.push(gravity);
 
-    sim.particles.push(particle1);
-    sim.particles.push(particle2);
+    sim.add_particle(particle1);
+    sim.add_particle(particle2);
 
     window.run(sim);
 }

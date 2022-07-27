@@ -23,17 +23,17 @@
 //! ```
 
 use crate::physics::constraint::Constraint;
-use crate::physics::global_force::GlobalForce;
+use crate::physics::force::Force;
 use crate::physics::particle::Particle;
 
 #[derive(Default)]
 pub struct Sim<'a> {
     pub running: bool,
-    pub time: f64,
     pub substeps: u32,
-    pub particles: Vec<Particle>,
-    pub forces: Vec<GlobalForce<'a>>,
-    pub constraints: Vec<Constraint>,
+    time: f64,
+    particles: Vec<Particle>,
+    forces: Vec<Force<'a>>,
+    constraints: Vec<Constraint>,
 }
 
 impl<'a> Sim<'a> {
@@ -63,8 +63,23 @@ impl<'a> Sim<'a> {
                     particle.update_vel(sub_dt);
                 }
             }
-            // clear particle forces. remove broken constraints... //
+            // TODO: check for collisions, clear particle forces, remove broken constraints... //
             self.time += dt;
         }
+    }
+
+    /// Get the current simulation time
+    pub fn time(self: &Self) -> f64 {
+        self.time
+    }
+
+    /// Get a reference to the simulation's particles
+    pub fn particles(self: &mut Self) -> &[Particle] {
+        &self.particles
+    }
+
+    /// Add a new particle to the simulation
+    pub fn add_particle(self: &mut Self, particle: Particle) {
+        self.particles.push(particle);
     }
 }

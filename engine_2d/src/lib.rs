@@ -11,7 +11,7 @@ pub mod prelude {
     //! ```
     pub use crate::{
         physics::constraint::{Constraint, ConstraintKind},
-        physics::global_force::GlobalForce,
+        physics::force::Force,
         physics::particle::*,
         physics::sim::Sim,
         vec2::Vec2,

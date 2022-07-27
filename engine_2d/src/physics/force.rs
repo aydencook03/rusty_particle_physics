@@ -2,7 +2,7 @@ use crate::physics::particle::Particle;
 use crate::vec2::Vec2;
 
 /// Force on a Particle or between interacting Particles
-pub enum GlobalForce<'a> {
+pub enum Force<'a> {
     /// The fundamental type of 2d force.
     ///
     /// The other Force types usually return a configured GeneralForce or RawForce when being handled.
@@ -51,7 +51,7 @@ pub enum GlobalForce<'a> {
     },
 }
 
-impl<'a> GlobalForce<'a> {
+impl<'a> Force<'a> {
     /// Send the Force to the Particle(s)
     pub fn send(self: &Self) {
         todo!();
