@@ -1,6 +1,11 @@
 # Rusty Particle Physics
 
+## Capabilities
+
+## Why particle based?
+
 ## Technical Scope
+
 In order to help fight the urge of wanting to add more 
 and more complex features, I've outlined the scope of 
 this engine.
@@ -20,10 +25,8 @@ This boils it down to only three conservation laws:
 - Energy
 - Mass
 
-Why particle based?
-- 
-
 ## References, Ideas, Inspiration:
+
 - Youtube [playlist](https://youtube.com/playlist?list=PLvypLlLlZuNhcdtPKfQ25cpmhBuWWDZzR) for ideas.
 - Work of [Matthias Müller](https://matthias-research.github.io/pages/) and [Miles Macklin](http://blog.mmacklin.com/).
 - Papers:
@@ -33,6 +36,7 @@ Why particle based?
     - Takahashi, Nishita, Fujishiro. 2013. [Link](https://doi.org/10.1016/j.cag.2014.06.002).<br />Fast simulation of viscous fluids with elasticity and thermal conductivity using position-based dynamics.
 
 ## Typical Simulation Methods:
+
 - Forces (force/Newtonian based dynamics)
 - Constraints (position based dynamics)
 - Impulses (impulse based dynamics)

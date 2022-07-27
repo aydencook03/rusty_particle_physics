@@ -36,7 +36,7 @@
 //! ```
 
 use rusty_particle_physics_2d::interaction;
-use rusty_particle_physics_2d::physics::sim::Sim;
+use rusty_particle_physics_2d::physics::system::System;
 use rusty_particle_physics_2d::rendering::View2D;
 use rusty_particle_physics_2d::vec2::Vec2;
 
@@ -124,7 +124,7 @@ impl Renderer {
     }
 
     /// Run the given simulation in a new window.
-    pub fn run(mut self: Self, mut sim: Sim<'static>) {
+    pub fn run(mut self: Self, mut sim: System<'static>) {
         let mut time = Instant::now();
 
         self.event_loop.run(move |event, _, control_flow| {
@@ -246,7 +246,7 @@ impl Renderer {
                     let elapsed = (Instant::now().duration_since(time).as_micros() as f64)
                         * (10.0_f64).powi(-6);
                     // step the simulation forward by that time
-                    sim.step_simulation(elapsed);
+                    sim.step_forward(elapsed);
 
                     // put fps and sim time on window title
                     self.context.window_mut().set_title(
@@ -266,7 +266,7 @@ impl Renderer {
     }
 
     /// Render/Bake an animation instead of running real-time in a window.
-    pub fn create_animation(self: &Self, _sim: Sim, _fps: u8, _length: f64) {
+    pub fn create_animation(self: &Self, _sim: System, _fps: u8, _length: f64) {
         todo!();
     }
 }

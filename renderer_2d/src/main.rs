@@ -3,7 +3,7 @@ use rusty_particle_physics_2d::prelude::*;
 
 fn main() {
     let window = Renderer::new(600, 600);
-    let mut sim = Sim::new();
+    let mut sim = System::new();
 
     let gravity = Vec2::new(0.0, -400.0);
 

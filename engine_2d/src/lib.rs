@@ -13,7 +13,7 @@ pub mod prelude {
         physics::constraint::{Constraint, ConstraintKind},
         physics::force::Force,
         physics::particle::*,
-        physics::sim::Sim,
+        physics::system::System,
         vec2::Vec2,
     };
 }

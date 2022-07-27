@@ -52,7 +52,7 @@ pub enum Force<'a> {
 }
 
 impl<'a> Force<'a> {
-    /// Send the Force to the Particle(s)
+    /// Send the calculated force to the Particle(s) as a Vec2
     pub fn send(self: &Self) {
         todo!();
     }

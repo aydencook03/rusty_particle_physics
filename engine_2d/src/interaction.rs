@@ -1,15 +1,15 @@
 //! For interacting with the simulation while it's running.
 
-use crate::physics::sim::Sim;
+use crate::physics::system::System;
 
-pub fn pause_play(sim: &mut Sim) {
+pub fn pause_play(sim: &mut System) {
     sim.running = !sim.running;
 }
 
-pub fn step(sim: &mut Sim, dt: f64) {
-    sim.step_simulation(dt);
+pub fn step(sim: &mut System, dt: f64) {
+    sim.step_forward(dt);
 }
 
-pub fn restart(_sim: &mut Sim) {
+pub fn restart(_sim: &mut System) {
     todo!();
 }
