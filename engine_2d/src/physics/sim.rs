@@ -22,15 +22,18 @@
 //! }
 //! ```
 
-use crate::particle::Particle;
-use crate::simulation::sim_force::SimForce;
+use crate::physics::constraint::Constraint;
+use crate::physics::global_force::GlobalForce;
+use crate::physics::particle::Particle;
 
 #[derive(Default)]
 pub struct Sim<'a> {
     pub running: bool,
     pub time: f64,
+    pub substeps: u32,
     pub particles: Vec<Particle>,
-    pub forces: Vec<SimForce<'a>>,
+    pub forces: Vec<GlobalForce<'a>>,
+    pub constraints: Vec<Constraint>,
 }
 
 impl<'a> Sim<'a> {
@@ -38,55 +41,30 @@ impl<'a> Sim<'a> {
     pub fn new() -> Sim<'a> {
         Sim {
             running: true,
+            substeps: 1,
             ..Default::default()
         }
     }
 
     pub fn step_simulation(self: &mut Self, dt: f64) {
         if self.running {
-            self.calculate_forces();
-            self.update_particles(dt);
+            let sub_dt = dt / self.substeps as f64;
+            for force in &self.forces {
+                force.send();
+            }
+            for _ in 0..self.substeps {
+                for particle in &mut self.particles {
+                    particle.update(sub_dt);
+                }
+                for constraint in &self.constraints {
+                    Constraint::solver(constraint, sub_dt);
+                }
+                for particle in &mut self.particles {
+                    particle.update_vel(sub_dt);
+                }
+            }
+            // clear particle forces. remove broken constraints... //
             self.time += dt;
-        }
-    }
-}
-
-impl<'a> Sim<'a> {
-    pub fn add_particle(self: &mut Self, particle: Particle) {
-        self.particles.push(particle);
-    }
-
-    pub fn remove_particle(self: &mut Self, index: usize) {
-        self.particles.swap_remove(index);
-    }
-
-    pub fn clear_particles(self: &mut Self) {
-        self.particles.clear();
-    }
-
-    pub fn add_force(self: &mut Self, force: SimForce<'a>) {
-        self.forces.push(force);
-    }
-
-    pub fn remove_force(self: &mut Self, index: usize) {
-        self.forces.swap_remove(index);
-    }
-
-    pub fn clear_forces(self: &mut Self) {
-        self.forces.clear();
-    }
-}
-
-impl<'a> Sim<'a> {
-    fn calculate_forces(self: &mut Self) {
-        for force in &mut self.forces {
-            force.send();
-        }
-    }
-
-    fn update_particles(self: &mut Self, dt: f64) {
-        for particle in &mut self.particles {
-            particle.update(dt);
         }
     }
 }

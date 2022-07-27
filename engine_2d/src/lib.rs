@@ -1,7 +1,6 @@
-pub mod constraint;
-pub mod particle;
+pub mod interaction;
+pub mod physics;
 pub mod rendering;
-pub mod simulation;
 pub mod vec2;
 
 pub mod prelude {
@@ -11,9 +10,10 @@ pub mod prelude {
     //! use rusty_particle_physics_2d::prelude::*;
     //! ```
     pub use crate::{
-        constraint::{Constraint, ConstraintKind},
-        particle::*,
-        simulation::{sim::Sim, sim_constraint::SimConstraint, sim_force::SimForce},
+        physics::constraint::{Constraint, ConstraintKind},
+        physics::global_force::GlobalForce,
+        physics::particle::*,
+        physics::sim::Sim,
         vec2::Vec2,
     };
 }

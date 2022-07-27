@@ -17,7 +17,7 @@
 
 use crate::vec2::Vec2;
 
-const DEFAULT_COLOR: (u8, u8, u8, u8) = crate::particle::GREY;
+const DEFAULT_COLOR: (u8, u8, u8, u8) = crate::physics::particle::GREY;
 const PAN_STEP: f64 = 20.0;
 const ZOOM_STEP: f64 = 0.15;
 

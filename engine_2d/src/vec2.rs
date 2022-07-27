@@ -34,6 +34,11 @@ impl Vec2 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
 
+    /// Returns the square of the magnitude of the Vec2
+    pub fn mag_squared(self: &Self) -> f64 {
+        self.x.powi(2) + self.y.powi(2)
+    }
+
     /// Dot product with another Vec2
     pub fn dot(self: &Self, other: &Vec2) -> f64 {
         self.x * other.x + self.y * other.y

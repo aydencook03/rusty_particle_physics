@@ -1,4 +1,4 @@
-//! Provides the logic for particles, their forces, and their constraints.
+//! Provides the logic for particles and their external forces.
 //!
 //! The particles in this engine obey locality, which is why most of the interesting force logic is handled by the
 //! global simulation. As this engine is non-field theoretic, there are no fields to locally mediate forces, and so
@@ -7,10 +7,8 @@
 //! a Vec2 that they can then handle.
 //!
 //! A particle is the most fundamental object in the physics engine, and can be used on its own if needed, as it
-//! handles its own interactions with the outside world through forces, and makes sure that it satisfies a set of
-//! constraints in the process.
+//! handles its own interactions with the outside world through forces.
 
-use crate::constraint::Constraint;
 use crate::vec2::Vec2;
 
 pub const WHITE: (u8, u8, u8, u8) = (255, 255, 255, 255);
@@ -29,18 +27,18 @@ pub struct Particle {
     pub radius: f64,
     /// 32-bit color: (r, g, b, a)
     pub color: (u8, u8, u8, u8),
+    /// a field intended to be used as a unique ID for anytime that it is useful
+    pub id: u32,
     /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
     pub group: u32,
-    /// number of times that constraint solving is cycled through
-    pub constraint_passes: u32,
     /// 2-dimensional position of the particle
     pub pos: Vec2,
+    /// the previous 2-dimensional position of the particle
+    pub old_pos: Vec2,
     /// 2-dimensional velocity of the particle
     pub vel: Vec2,
     /// a collection of all of the forces acting on the particle
     pub forces: Vec<Vec2>,
-    /// a collection of all of the constraints that the particle must obey
-    pub constraints: Vec<Constraint>,
 }
 
 impl Particle {
@@ -50,7 +48,6 @@ impl Particle {
             mass: 10.0,
             radius: 10.0,
             color: CRIMSON,
-            constraint_passes: 3,
             ..Default::default()
         }
     }
@@ -70,6 +67,12 @@ impl Particle {
     /// A builder method to give the particle a specific color after creating it.
     pub fn color(mut self: Self, color: (u8, u8, u8, u8)) -> Particle {
         self.color = color;
+        self
+    }
+
+    /// A builder method to give the particle a specific id after creating it.
+    pub fn id(mut self: Self, id: u32) -> Particle {
+        self.id = id;
         self
     }
 
@@ -104,13 +107,18 @@ impl Particle {
     /// $$\vec{x} _{n+1} = \vec{x} _{n} + \vec{v} _{n+1}\Delta t$$
     pub fn update(self: &mut Self, dt: f64) {
         let mut total_force = Vec2::zero();
-        for force in &mut self.forces {
+        for force in &self.forces {
             total_force += *force;
         }
         self.vel += (total_force / self.mass) * dt;
-        let mut new_pos = self.pos + self.vel * dt;
-        new_pos = Constraint::solver(&self.constraints, new_pos, self.constraint_passes);
-        self.vel = (new_pos - self.pos) / dt;
-        self.pos = new_pos;
+        self.old_pos = self.pos;
+        self.pos += self.vel * dt;
+    }
+
+    /// Update the velocity based on the previous position and the current position.
+    /// 
+    /// This is mainly used for changing the velocity after some kind of non-physical constraint has been applied.
+    pub fn update_vel(self: &mut Self, dt: f64) {
+        self.vel = (self.pos - self.old_pos) / dt;
     }
 }

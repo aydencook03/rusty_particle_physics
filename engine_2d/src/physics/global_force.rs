@@ -1,9 +1,8 @@
-use crate::particle::Particle;
-use crate::simulation::sim_constraint::SimConstraint;
+use crate::physics::particle::Particle;
 use crate::vec2::Vec2;
 
 /// Force on a Particle or between interacting Particles
-pub enum SimForce<'a> {
+pub enum GlobalForce<'a> {
     /// The fundamental type of 2d force.
     ///
     /// The other Force types usually return a configured GeneralForce or RawForce when being handled.
@@ -21,6 +20,7 @@ pub enum SimForce<'a> {
         force: Vec2,
     },
 
+    /*
     /// A general restoring force (F = -kx^n - bv) that attempts to satisfy a given constraint.
     ///
     /// Examples:
@@ -33,7 +33,7 @@ pub enum SimForce<'a> {
         n: f64,
         b: f64,
     },
-
+    */
     /// A simple downwards pull of gravity (F = -mg)
     WorldGravity { particle: &'a mut Particle, g: f64 },
 
@@ -51,7 +51,7 @@ pub enum SimForce<'a> {
     },
 }
 
-impl<'a> SimForce<'a> {
+impl<'a> GlobalForce<'a> {
     /// Send the Force to the Particle(s)
     pub fn send(self: &Self) {
         todo!();

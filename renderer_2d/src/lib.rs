@@ -35,9 +35,9 @@
 //! window.run(sim);
 //! ```
 
+use rusty_particle_physics_2d::interaction;
+use rusty_particle_physics_2d::physics::sim::Sim;
 use rusty_particle_physics_2d::rendering::View2D;
-use rusty_particle_physics_2d::simulation::interaction;
-use rusty_particle_physics_2d::simulation::sim::Sim;
 use rusty_particle_physics_2d::vec2::Vec2;
 
 use winit::{
@@ -54,7 +54,7 @@ use softbuffer::GraphicsContext;
 use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, Stroke, Transform};
 
 const STROKE: f32 = 2.5;
-const STROKE_COLOR: (u8, u8, u8, u8) = rusty_particle_physics_2d::particle::BLACK;
+const STROKE_COLOR: (u8, u8, u8, u8) = rusty_particle_physics_2d::physics::particle::BLACK;
 
 pub struct Renderer {
     view: View2D,
@@ -251,7 +251,7 @@ impl Renderer {
                     // put fps and sim time on window title
                     self.context.window_mut().set_title(
                         format!(
-                            "Simulation - fps: {:.0} - time: {:.3}",
+                            "Simulation - FPS: {:.0} - Time: {:.3}",
                             1.0 / elapsed,
                             sim.time
                         )

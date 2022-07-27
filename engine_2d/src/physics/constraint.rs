@@ -14,14 +14,11 @@ pub enum ConstraintKind {
 /// A position based constraint.
 pub struct Constraint {
     pub function: Box<dyn Fn(Vec2) -> f64>,
-    pub stiffness: f64,
+    pub compliance: f64,
     pub kind: ConstraintKind,
     pub broken: bool,
 }
 
 impl Constraint {
-    pub fn solver(_constraints: &[Constraint], pos: Vec2, iterations: u32) -> Vec2 {
-        for _ in 0..iterations {}
-        pos
-    }
+    pub fn solver(_constraint: &Constraint, _dt: f64) {}
 }

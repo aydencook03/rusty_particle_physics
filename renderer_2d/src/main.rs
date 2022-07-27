@@ -17,17 +17,8 @@ fn main() {
     let mut particle2 = Particle::new().radius(4.0).pos(90.0, 70.0).vel(20.0, -20.0);
     particle2.forces.push(gravity);
 
-    // CONSTRAINT TESTING
-    // lock particle distance to 20.0 from center
-    particle1.constraints.push(Constraint {
-        function: Box::new(|pos| (pos - Vec2::new(0.0, 0.0)).mag() - 20.0),
-        stiffness: 1.0,
-        kind: ConstraintKind::Equality,
-        broken: false,
-    });
-
-    sim.add_particle(particle1);
-    sim.add_particle(particle2);
+    sim.particles.push(particle1);
+    sim.particles.push(particle2);
 
     window.run(sim);
 }
