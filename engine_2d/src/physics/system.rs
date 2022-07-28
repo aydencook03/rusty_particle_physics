@@ -1,7 +1,8 @@
 //! Provides the `System`, which is a collection of interacting particles, global forces, and constraints.
 //!
-//! Once setting up the simulation with all of the particles, constraint, and forces, one simply needs to call the
-//! System::step_forward method with the desired (or calculated) timestep, and it will handle all of the physics.
+//! Once setting up the simulation with all of the particles, constraint, and forces, one simply needs to
+//! call the System::step_forward method with the desired (or calculated) timestep, and it will
+//! handle all of the physics.
 //!
 //! # Example usage:
 //!
@@ -19,24 +20,21 @@ use crate::physics::constraint::Constraint;
 use crate::physics::force::Force;
 use crate::physics::particle::Particle;
 
-/// A system is a collection of the following:
-/// 
-/// - Particles
-/// - Forces
-/// - Constraints
+/// A system is a collection of interacting particles, global forces, and constraints.
 #[derive(Default)]
-pub struct System<'a> {
+pub struct System {
     pub running: bool,
     pub substeps: u32,
     time: f64,
-    particles: Vec<Particle>,
-    forces: Vec<Force<'a>>,
-    constraints: Vec<Constraint>,
+    pub particles: Vec<Particle>,
+    particle_id_counter: u32,
+    pub forces: Vec<Force>,
+    pub constraints: Vec<Constraint>,
 }
 
-impl<'a> System<'a> {
+impl System {
     /// Construct a a new system
-    pub fn new() -> System<'a> {
+    pub fn new() -> System {
         System {
             running: true,
             substeps: 1,
@@ -56,7 +54,7 @@ impl<'a> System<'a> {
                     particle.update(sub_dt);
                 }
                 for constraint in &self.constraints {
-                    Constraint::solver(constraint, sub_dt);
+                    constraint.project(sub_dt);
                 }
                 for particle in &mut self.particles {
                     particle.update_vel(sub_dt);
@@ -72,13 +70,13 @@ impl<'a> System<'a> {
         self.time
     }
 
-    /// Get a reference to the system's particles
-    pub fn particles(self: &mut Self) -> &[Particle] {
-        &self.particles
+    /// Add a new particle to the system. Returns a reference to that particle.
+    pub fn add_particle(self: &mut Self, particle: Particle) {
+        self.particles.push(particle.id(self.particle_id_counter));
+        self.particle_id_counter += 1;
     }
 
-    /// Add a new particle to the system
-    pub fn add_particle(self: &mut Self, particle: Particle) {
-        self.particles.push(particle);
+    pub fn add_constraint(self: &mut Self, constraint: Constraint) {
+        self.constraints.push(constraint);
     }
 }

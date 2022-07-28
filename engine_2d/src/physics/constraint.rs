@@ -1,3 +1,4 @@
+use crate::physics::particle::Particle;
 use crate::vec2::Vec2;
 
 /// The type of constraint.
@@ -11,14 +12,26 @@ pub enum ConstraintKind {
     Inequality,
 }
 
-/// A position based constraint.
-pub struct Constraint {
-    pub function: Box<dyn Fn(Vec2) -> f64>,
-    pub compliance: f64,
-    pub kind: ConstraintKind,
-    pub broken: bool,
+pub enum Constraint {
+    /// A generalized, position based constraint.
+    Constraint {
+        particles: Vec<Particle>,
+        function: Box<dyn Fn(Vec<Vec2>) -> f64>,
+        compliance: f64,
+        kind: ConstraintKind,
+        broken: bool,
+    },
+
+    BoundingRect {},
 }
 
 impl Constraint {
+    pub fn project(self: &Self, dt: f64) {
+        match self {
+            Constraint::Constraint { .. } => Constraint::solver(self, dt),
+            _ => (),
+        }
+    }
+
     pub fn solver(_constraint: &Constraint, _dt: f64) {}
 }

@@ -23,22 +23,22 @@ pub const FOREST_GREEN: (u8, u8, u8, u8) = (1, 79, 55, 255);
 pub struct Particle {
     /// mass of the particle
     pub mass: f64,
-    /// radius of the particle
-    pub radius: f64,
-    /// 32-bit color: (r, g, b, a)
-    pub color: (u8, u8, u8, u8),
-    /// a field intended to be used as a unique ID for anytime that it is useful
-    pub id: u32,
-    /// free number to use for things like group rendering, grouping together properties (liquids, solids), etc
-    pub group: u32,
     /// 2-dimensional position of the particle
     pub pos: Vec2,
-    /// the previous 2-dimensional position of the particle
-    old_pos: Vec2,
     /// 2-dimensional velocity of the particle
     pub vel: Vec2,
     /// a collection of all of the forces acting on the particle
     pub forces: Vec<Vec2>,
+    /// the previous 2-dimensional position of the particle
+    old_pos: Vec2,
+    /// a field intended to be used as a unique ID for anytime that it is useful
+    pub id: u32,
+    /// when you want to group together particles with shared properties, etc
+    pub group: u32,
+    /// radius of the particle
+    pub radius: f64,
+    /// 32-bit color: (r, g, b, a)
+    pub color: (u8, u8, u8, u8),
 }
 
 impl Particle {
@@ -95,7 +95,7 @@ impl Particle {
     }
 
     /// An explicit, first-order symplectic integrator that updates the
-    /// Particle (uses Semi-implicit/Symplectic Euler).
+    /// Particle (uses the Semi-implicit/Symplectic Euler Method).
     ///
     /// A classical particle behaves according to:
     /// $$\frac{d}{dt}\begin{bmatrix}\vec{x} \\\ \vec{v}\end{bmatrix}=
@@ -116,8 +116,11 @@ impl Particle {
     }
 
     /// Update the velocity based on the previous position and the current position.
-    /// 
-    /// This is mainly used for changing the velocity after some kind of non-physical constraint or 
+    ///
+    /// This method exists so that an implicit velocity update doesn't need to occur in the `update` method, as
+    /// something like this should be very explicit.
+    ///
+    /// It is mainly used for changing the velocity after some kind of non-physical constraint or
     /// position change has been applied.
     pub fn update_vel(self: &mut Self, dt: f64) {
         self.vel = (self.pos - self.old_pos) / dt;

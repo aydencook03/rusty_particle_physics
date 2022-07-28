@@ -97,8 +97,8 @@ impl View2D {
     pub fn map_to_view(self: &Self, pos: Vec2, radius: f64) -> (Vec2, f64) {
         let zoom = self.parameterized_zoom();
         // create affine transformation data
-        let identity = ((1.0, 0.0), (0.0, 1.0));
-        let scale = ((zoom, 0.0), (0.0, zoom));
+        let identity = [[1.0, 0.0], [0.0, 1.0]];
+        let scale = [[zoom, 0.0], [0.0, zoom]];
         let pan = self.view_offset * -1.0;
         let vec = pos
             .affine_transformation(identity, pan)

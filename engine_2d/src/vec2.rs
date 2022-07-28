@@ -53,14 +53,14 @@ impl Vec2 {
     ///
     /// y = Ax + b
     ///
-    /// A = ( (f64, f64),
-    ///       (f64, f64) )
+    /// A = [ [f64, f64],
+    ///       [f64, f64] ]
     ///
     /// b = Vec2
-    pub fn affine_transformation(self: &Self, a: ((f64, f64), (f64, f64)), b: Vec2) -> Vec2 {
+    pub fn affine_transformation(self: &Self, a: [[f64; 2]; 2], b: Vec2) -> Vec2 {
         Vec2 {
-            x: self.x * (a.0).0 + self.y * (a.0).1 + b.x,
-            y: self.x * (a.1).0 + self.y * (a.1).1 + b.y,
+            x: self.x * a[0][0] + self.y * a[0][1] + b.x,
+            y: self.x * a[1][0] + self.y * a[1][1] + b.y,
         }
     }
 }

@@ -124,7 +124,7 @@ impl Renderer {
     }
 
     /// Run the given simulation in a new window.
-    pub fn run(mut self: Self, mut sim: System<'static>) {
+    pub fn run(mut self: Self, mut sim: System) {
         let mut time = Instant::now();
 
         self.event_loop.run(move |event, _, control_flow| {
@@ -186,7 +186,7 @@ impl Renderer {
                     ));
 
                     // draw the sim's particles
-                    for particle in sim.particles() {
+                    for particle in &sim.particles {
                         // get particle position and radius mapped to window space
                         let (Vec2 { x, y }, radius) =
                             self.view.map_to_view(particle.pos, particle.radius);
